@@ -148,6 +148,8 @@ textarea{min-height:120px;resize:vertical}
     <input type="file" id="fGallery" accept="image/*" multiple>
     <div id="galList" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>
     <div class="switch"><input type="checkbox" id="fPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published (visible on the site)</label></div>
+    <div class="switch"><input type="checkbox" id="fFeat"><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Feature on homepage</label></div>
+    <label>Homepage position (1 = first). Leave blank to auto-place after pinned items.</label><input type="number" id="fHpo" min="1" step="1" placeholder="e.g. 1">
     <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn solid" id="saveBtn" onclick="saveReview()">Save</button>
       <button class="btn" onclick="closeEditor()">Cancel</button>
@@ -184,6 +186,8 @@ textarea{min-height:120px;resize:vertical}
       <p class="inline-note">Pick one of your reviews, or leave "No review" and type the name for places you haven't reviewed yet.</p>
     </div>
     <div class="switch"><input type="checkbox" id="cPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published</label></div>
+    <div class="switch"><input type="checkbox" id="cFeat"><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Feature on homepage</label></div>
+    <label>Homepage position (1 = first). Leave blank to auto-place after pinned items.</label><input type="number" id="cHpo" min="1" step="1" placeholder="e.g. 1">
     <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn solid" id="colSaveBtn" onclick="saveCol()">Save</button>
       <button class="btn" onclick="closeColEditor()">Cancel</button>
@@ -301,6 +305,7 @@ async function loadReviews(){
     const img = r.image_url ? `<img src="${r.image_url.startsWith('http')?r.image_url:'/'+r.image_url}" alt="">` : '<img alt="">';
     d.innerHTML = `${img}<div class="gi"><h3>${esc(r.name)}</h3><p class="meta">${esc(r.area||'')} · <span class="stars">★</span> ${r.rating??'–'}</p></div>
       <span class="pill ${r.published?'live':''}">${r.published?'Live':'Draft'}</span>
+      ${r.featured?`<span class="pill" style="background:var(--ink);color:#fff">★ Home${r.homepage_order?' #'+r.homepage_order:''}</span>`:''}
       <a class="btn small" href="/review.html?slug=${encodeURIComponent(r.slug)}&preview=1" target="_blank">Preview</a>
       <button class="btn small" data-id="${r.id}">Edit</button>`;
     d.querySelector('button').onclick = ()=>openEditor(r);
@@ -320,6 +325,8 @@ function openEditor(r){
   set('fOrder', r?.order_items); set('fVerdict', r?.verdict);
   set('fGmaps', r?.gmaps_url); set('fInsta', r?.instagram_url ?? 'https://instagram.com/halalfooddiary'); set('fTiktok', r?.tiktok_url ?? 'https://tiktok.com/@halalfooddiary');
   document.getElementById('fPub').checked = r ? !!r.published : true;
+  document.getElementById('fFeat').checked = r ? !!r.featured : false;
+  set('fHpo', r?.homepage_order);
   document.getElementById('fPhoto').value = '';
   focusX = r?.focus_x ?? 50; focusY = r?.focus_y ?? 50;
   galItems = (r && Array.isArray(r.gallery)) ? r.gallery.map(u=>({url:u})) : [];
@@ -364,6 +371,8 @@ async function saveReview(){
       gmaps_url: val('fGmaps') || (val('fLat')&&val('fLng') ? 'https://www.google.com/maps/search/?api=1&query='+val('fLat')+','+val('fLng') : null),
       instagram_url: val('fInsta')||null, tiktok_url: val('fTiktok')||null,
       published: document.getElementById('fPub').checked,
+      featured: document.getElementById('fFeat').checked,
+      homepage_order: val('fHpo')?parseInt(val('fHpo'),10):null,
       focus_x: Math.round(focusX), focus_y: Math.round(focusY)
     };
     if(image_url) rec.image_url = image_url;
@@ -476,6 +485,7 @@ async function loadCols(){
     const img = c.cover_url?`<img src="${c.cover_url.startsWith('http')?c.cover_url:'/'+c.cover_url}" alt="">`:'<img alt="">';
     d.innerHTML = `${img}<div class="gi"><h3>${esc(c.title)}</h3><p class="meta">${c.type==='area'?'Area page':'Guide'}</p></div>
       <span class="pill ${c.published?'live':''}">${c.published?'Live':'Draft'}</span>
+      ${c.featured?`<span class="pill" style="background:var(--ink);color:#fff">★ Home${c.homepage_order?' #'+c.homepage_order:''}</span>`:''}
       <a class="btn small" href="/guide.html?slug=${encodeURIComponent(c.slug)}" target="_blank">View</a>
       <button class="btn small">Edit</button>`;
     d.querySelector('button').onclick = ()=>openColEditor(c);
@@ -496,6 +506,8 @@ function openColEditor(c){
   document.getElementById('cAreaMatch').value = c?.area_match || '';
   document.getElementById('cIntro').value = c?.intro || '';
   document.getElementById('cPub').checked = c ? !!c.published : true;
+  document.getElementById('cFeat').checked = c ? !!c.featured : false;
+  set('cHpo', c?.homepage_order);
   document.getElementById('cCover').value='';
   const pv = document.getElementById('cCoverPrev');
   if(c?.cover_url){ pv.src = c.cover_url.startsWith('http')?c.cover_url:'/'+c.cover_url; pv.classList.remove('hidden'); } else pv.classList.add('hidden');
@@ -554,7 +566,7 @@ async function saveCol(){
       area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
       intro: document.getElementById('cIntro').value.trim()||null,
       items: type==='guide'?colItems.filter(i=>i.review_slug||i.name):[],
-      published: document.getElementById('cPub').checked };
+      published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null };
     if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);
     let error;
     if(editingColId){ ({error}=await sb.from('collections').update(rec).eq('id',editingColId)); }
