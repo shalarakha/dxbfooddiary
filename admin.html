@@ -119,7 +119,8 @@ textarea{min-height:120px;resize:vertical}
     <div class="row3">
       <div><label>Price</label><input type="text" id="fPrice" placeholder="AED 80pp"></div>
       <div><label>Best for</label><input type="text" id="fBest" placeholder="Casual dinner"></div>
-      <div><label>Review date</label><input type="date" id="fDate"></div>
+      <div><label>Published date</label><input type="date" id="fDatePub"></div>
+      <div><label>Last updated <span style="color:var(--mute);font-weight:400">(auto = today)</span></label><input type="date" id="fDateMod"></div>
     </div>
     <div class="row">
       <div><label>Latitude</label><input type="text" id="fLat" placeholder="25.07"></div>
@@ -184,6 +185,10 @@ textarea{min-height:120px;resize:vertical}
       <div id="cItems"></div>
       <button class="btn small" style="margin-top:8px" onclick="colAddItem()">+ Add place</button>
       <p class="inline-note">Pick one of your reviews, or leave "No review" and type the name for places you haven't reviewed yet.</p>
+    </div>
+    <div class="row">
+      <div><label>Published date</label><input type="date" id="cDatePub"></div>
+      <div><label>Last updated <span style="color:var(--mute);font-weight:400">(auto = today)</span></label><input type="date" id="cDateMod"></div>
     </div>
     <div class="switch"><input type="checkbox" id="cPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published</label></div>
     <div class="switch"><input type="checkbox" id="cFeat"><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Feature on homepage</label></div>
@@ -320,7 +325,10 @@ function openEditor(r){
   document.getElementById('edTitle').textContent = r ? 'Edit: '+r.name : 'New review';
   document.getElementById('delBtn').classList.toggle('hidden', !r);
   set('fName', r?.name); set('fSlug', r?.slug); set('fArea', r?.area); set('fCuisine', r?.cuisine);
-  set('fRating', r?.rating); set('fPrice', r?.price); set('fBest', r?.best_for); set('fDate', r?.review_date || new Date().toISOString().slice(0,10));
+  set('fRating', r?.rating); set('fPrice', r?.price); set('fBest', r?.best_for);
+  var today=new Date().toISOString().slice(0,10);
+  set('fDatePub', r?.date_published || r?.review_date || today);
+  set('fDateMod', r?.date_modified || r?.review_date || today);
   set('fLat', r?.lat); set('fLng', r?.lng); set('fBlurb', r?.blurb); set('fBody', r?.body);
   set('fOrder', r?.order_items); set('fVerdict', r?.verdict);
   set('fGmaps', r?.gmaps_url); set('fInsta', r?.instagram_url ?? 'https://instagram.com/halalfooddiary'); set('fTiktok', r?.tiktok_url ?? 'https://tiktok.com/@halalfooddiary');
@@ -364,7 +372,9 @@ async function saveReview(){
     const rec = {
       name:val('fName'), slug:val('fSlug'), area:val('fArea'), cuisine:val('fCuisine')||null,
       rating: parseFloat(val('fRating')), price:val('fPrice')||null, best_for:val('fBest')||null,
-      review_date: val('fDate')||null,
+      review_date: val('fDatePub')||null,
+      date_published: val('fDatePub')||null,
+      date_modified: val('fDateMod')||new Date().toISOString().slice(0,10),
       lat: val('fLat')?parseFloat(val('fLat')):null, lng: val('fLng')?parseFloat(val('fLng')):null,
       blurb: val('fBlurb') || (val('fArea')+' · '+(val('fCuisine')||'')).replace(/ · $/,''),
       body: val('fBody')||null, order_items: val('fOrder')||null, verdict: val('fVerdict')||null,
@@ -508,6 +518,9 @@ function openColEditor(c){
   document.getElementById('cPub').checked = c ? !!c.published : true;
   document.getElementById('cFeat').checked = c ? !!c.featured : false;
   set('cHpo', c?.homepage_order);
+  var todayC=new Date().toISOString().slice(0,10);
+  set('cDatePub', c?.date_published || (c?.created_at?c.created_at.slice(0,10):todayC));
+  set('cDateMod', c?.date_modified || todayC);
   document.getElementById('cCover').value='';
   const pv = document.getElementById('cCoverPrev');
   if(c?.cover_url){ pv.src = c.cover_url.startsWith('http')?c.cover_url:'/'+c.cover_url; pv.classList.remove('hidden'); } else pv.classList.add('hidden');
@@ -566,7 +579,7 @@ async function saveCol(){
       area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
       intro: document.getElementById('cIntro').value.trim()||null,
       items: type==='guide'?colItems.filter(i=>i.review_slug||i.name):[],
-      published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null };
+      published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null, date_published: val('cDatePub')||null, date_modified: val('cDateMod')||new Date().toISOString().slice(0,10) };
     if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);
     let error;
     if(editingColId){ ({error}=await sb.from('collections').update(rec).eq('id',editingColId)); }
