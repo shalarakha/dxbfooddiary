@@ -118,7 +118,7 @@ in Dubai</h1>
 
 <section class="sec" id="reviews"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="#">All reviews</a></div>
-<div class="grid">
+<div class="grid" id="revGrid">
 <a class="card" href="reviews/bkry.html"><div class="ph"><img src="img/bkry.jpg" alt="BKRY" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
 <a class="card" href="reviews/heal.html"><div class="ph"><img src="img/heal.jpg" alt="Heal" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
 <a class="card" href="reviews/orto.html"><div class="ph"><img src="img/orto.jpg" alt="ORTO" loading="lazy"></div><h3>ORTO</h3><p class="meta">Jumeirah · Brunch</p><p class="meta"><span class="stars">★</span> 4.2 <span style="color:var(--line)">/ 5</span></p></a>
@@ -183,13 +183,32 @@ in Dubai</h1>
 <footer class="wrap"><span>© 2026 DXB Food Diary</span><span>Reviews · Guides · Areas · Map · About</span><span><a href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener">Instagram</a> · <a href="https://tiktok.com/@halalfooddiary" target="_blank" rel="noopener">TikTok</a> · Work with me</span></footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/config.js"></script>
+<script src="js/track.js" defer></script>
 <script>
-const places=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455,"bkry"],["Heal","Jumeirah",4.1,25.15877,55.20925,"heal"],["ORTO","Jumeirah",4.2,25.19501,55.23580,"orto"],["Jungle Bowls","DIFC",4.0,25.20774,55.27827,"jungle-bowls"],["SLRP","Dubai Mall",4.5,25.19586,55.27998,"slrp"],["Eleven Green","Jumeirah",4.1,25.14461,55.19861,"eleven-green"]];
+const fallbackPlaces=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455,"reviews/bkry.html","img/bkry.jpg","Alserkal Avenue \u00b7 Bakery & coffee"],["Heal","Jumeirah",4.1,25.15877,55.20925,"reviews/heal.html","img/heal.jpg","Jumeirah \u00b7 Sourdough & coffee"],["ORTO","Jumeirah",4.2,25.19501,55.23580,"reviews/orto.html","img/orto.jpg","Jumeirah \u00b7 Brunch"],["Jungle Bowls","DIFC",4.0,25.20774,55.27827,"reviews/jungle-bowls.html","img/jungle-bowls.jpg","DIFC \u00b7 Bowls & sushi"],["SLRP","Dubai Mall",4.5,25.19586,55.27998,"reviews/slrp.html","img/slrp.jpg","Dubai Mall \u00b7 Ramen & sushi"],["Eleven Green","Jumeirah",4.1,25.14461,55.19861,"reviews/eleven-green.html","img/eleven-green.jpg","Jumeirah \u00b7 Burgers"]];
 const map=L.map("map",{scrollWheelZoom:false,zoomControl:true}).setView([25.18,55.24],11);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"&copy; OpenStreetMap &copy; CARTO",maxZoom:19}).addTo(map);
-const icon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
-const b=[];places.forEach(p=>{L.marker([p[3],p[4]],{icon}).addTo(map).bindPopup(`<b><a href="reviews/${p[5]}.html" style="border-bottom:1px solid var(--line)">${p[0]}</a></b>${p[1]} · ★ ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
-map.fitBounds(b,{padding:[30,30]});
+const pinIcon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
+let markerLayer=L.layerGroup().addTo(map);
+function escH(t){return (t||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function renderAll(list){
+  const g=document.getElementById("revGrid");
+  if(list.length){g.innerHTML=list.map(p=>`<a class="card" href="${escH(p[5])}"><div class="ph">${p[6]?`<img src="${escH(p[6])}" alt="${escH(p[0])}" loading="lazy">`:""}</div><h3>${escH(p[0])}</h3><p class="meta">${escH(p[7]||p[1])}</p><p class="meta"><span class="stars">\u2605</span> ${p[2].toFixed(1)} <span style="color:var(--line)">/ 5</span></p></a>`).join("")}
+  markerLayer.clearLayers();
+  const b=[];
+  list.forEach(p=>{if(p[3]==null||p[4]==null)return;L.marker([p[3],p[4]],{icon:pinIcon}).addTo(markerLayer).bindPopup(`<b><a href="${escH(p[5])}" style="border-bottom:1px solid var(--line)">${escH(p[0])}</a></b>${escH(p[1])} \u00b7 \u2605 ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
+  if(b.length)map.fitBounds(b,{padding:[30,30]});
+}
+renderAll(fallbackPlaces);
+if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
+  fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb&order=review_date.desc,created_at.desc",{headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}})
+  .then(r=>r.json())
+  .then(rows=>{
+    if(!Array.isArray(rows)||!rows.length)return;
+    renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||""]));
+  }).catch(()=>{});
+}
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}

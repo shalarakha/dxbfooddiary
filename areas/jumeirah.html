@@ -199,5 +199,7 @@ const icon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,1
 const b=[];places.forEach(p=>{L.marker([p[2],p[3]],{icon}).addTo(map).bindPopup(`<b>${p[0]}</b>${p[1]}`);b.push([p[2],p[3]])});
 map.fitBounds(b,{padding:[30,30]});
 </script>
+<script src="/js/config.js"></script>
+<script src="/js/track.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin – DXB Food Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bar:#111111;--silver:#C8CACE;--ink:#1a1a1a;--mute:#6b6b66;--line:#e6e4de;--sand:#f5f3ee;--star:#d6a53c;--ok:#2e7d32;--bad:#b3261e;--maxw:960px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 18px}
+header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:10}
+.nav{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-size:14px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--silver)}
+.tabs{display:flex;gap:4px}
+.tabs button{background:none;border:0;color:rgba(200,202,206,.7);font:inherit;font-size:14px;padding:8px 12px;cursor:pointer;border-radius:6px}
+.tabs button.on{color:#fff;background:rgba(255,255,255,.12)}
+main{padding:28px 0 80px}
+h1{font-size:28px;margin-bottom:18px}
+h2{font-size:20px;margin:26px 0 10px}
+.card{border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px;background:#fff}
+label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:14px 0 4px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;background:#fff}
+textarea{min-height:120px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 16px}
+.btn{display:inline-block;padding:11px 20px;border:1px solid var(--ink);border-radius:999px;font:inherit;font-size:14px;background:#fff;cursor:pointer}
+.btn.solid{background:var(--ink);color:#fff}
+.btn.small{padding:7px 14px;font-size:13px}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+.msg{padding:10px 14px;border-radius:8px;font-size:14px;margin:12px 0;display:none}
+.msg.ok{display:block;background:#eaf4ea;color:var(--ok)}
+.msg.bad{display:block;background:#fbeceb;color:var(--bad)}
+.hidden{display:none!important}
+.login-box{max-width:400px;margin:70px auto}
+.list-item{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+.list-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;background:var(--sand)}
+.list-item .gi{flex:1;min-width:0}
+.list-item h3{font-size:16px;font-weight:500}
+.meta{font-size:13px;color:var(--mute)}
+.stars{color:var(--star)}
+.pill{font-size:11px;padding:3px 10px;border-radius:999px;background:var(--sand);color:var(--mute)}
+.pill.live{background:#eaf4ea;color:var(--ok)}
+.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.range{display:flex;gap:6px}
+.range button{font:inherit;font-size:13px;padding:7px 14px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer}
+.range button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:16px}
+.stat b{font-size:26px;font-weight:700;display:block}
+.stat span{font-size:12px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.bar-row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:14px}
+.bar-row .lbl{width:150px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .bar{height:20px;background:var(--ink);border-radius:4px;min-width:2px}
+.bar-row .num{color:var(--mute);font-size:13px}
+.trend{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line);padding-bottom:0;margin-top:8px}
+.trend div{flex:1;background:var(--ink);border-radius:2px 2px 0 0;min-height:2px}
+.trend-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:6px}
+.photo-prev{width:140px;height:140px;object-fit:cover;border-radius:8px;background:var(--sand);display:block;margin-top:8px}
+.inline-note{font-size:12px;color:var(--mute);margin-top:5px}
+.switch{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:15px}
+@media (max-width:640px){.row,.row3,.stat-grid{grid-template-columns:1fr}.bar-row .lbl{width:110px}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap nav">
+  <span class="brand">DXB Admin</span>
+  <div class="tabs hidden" id="tabs">
+    <button data-t="reviews" class="on" onclick="tab('reviews')">Reviews</button>
+    <button data-t="stats" onclick="tab('stats')">Analytics</button>
+    <button data-t="account" onclick="tab('account')">Account</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<!-- LOGIN -->
+<section id="login" class="login-box">
+  <h1 class="serif">Sign in</h1>
+  <div class="msg" id="loginMsg"></div>
+  <label>Email</label><input type="email" id="lEmail" autocomplete="username">
+  <label>Password</label><input type="password" id="lPass" autocomplete="current-password">
+  <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn solid" onclick="signIn()">Sign in</button>
+    <button class="btn" onclick="forgotPass()">Forgot password</button>
+  </div>
+  <p class="inline-note" style="margin-top:22px">First time here? <a href="#" style="border-bottom:1px solid var(--line)" onclick="toggleSignup();return false">Create the admin account</a></p>
+  <div id="signupBox" class="hidden" style="margin-top:8px">
+    <p class="inline-note">Creates your login. Only the approved admin email can actually manage the site, so this is safe.</p>
+    <button class="btn small" style="margin-top:10px" onclick="signUp()">Create account with the email &amp; password above</button>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" class="hidden">
+  <div class="topbar"><h1 class="serif" style="margin:0">Reviews</h1><button class="btn solid" onclick="newReview()">+ New review</button></div>
+  <div class="msg" id="revMsg"></div>
+  <div id="revList"></div>
+
+  <div id="editor" class="card hidden">
+    <h2 class="serif" id="edTitle" style="margin-top:0">New review</h2>
+    <div class="row">
+      <div><label>Restaurant name *</label><input type="text" id="fName" oninput="autoSlug()"></div>
+      <div><label>Slug (web address) *</label><input type="text" id="fSlug"><p class="inline-note">e.g. "pickl-jlt" → dxbfooddiary.com/review.html?slug=pickl-jlt</p></div>
+    </div>
+    <div class="row3">
+      <div><label>Area *</label><input type="text" id="fArea" placeholder="JLT"></div>
+      <div><label>Cuisine</label><input type="text" id="fCuisine" placeholder="Burgers"></div>
+      <div><label>Rating (0–5) *</label><input type="number" id="fRating" step="0.1" min="0" max="5"></div>
+    </div>
+    <div class="row3">
+      <div><label>Price</label><input type="text" id="fPrice" placeholder="AED 80pp"></div>
+      <div><label>Best for</label><input type="text" id="fBest" placeholder="Casual dinner"></div>
+      <div><label>Review date</label><input type="date" id="fDate"></div>
+    </div>
+    <div class="row">
+      <div><label>Latitude</label><input type="text" id="fLat" placeholder="25.07"></div>
+      <div><label>Longitude</label><input type="text" id="fLng" placeholder="55.14"></div>
+    </div>
+    <p class="inline-note">Tip: in Google Maps, long-press the restaurant → the two numbers that appear are lat, lng.</p>
+    <label>Card line (shows under the name on the homepage)</label><input type="text" id="fBlurb" placeholder="JLT · Burgers">
+    <label>Review text</label><textarea id="fBody" placeholder="Write paragraphs separated by a blank line.&#10;&#10;Start a line with ## for a section heading, e.g.&#10;## The room"></textarea>
+    <label>What to order (one item per line)</label><textarea id="fOrder" style="min-height:80px" placeholder="Signature burger – the one to get&#10;Fries&#10;Skip the milkshake"></textarea>
+    <label>Verdict (one line)</label><input type="text" id="fVerdict" placeholder="Worth the trip from anywhere in Dubai.">
+    <div class="row">
+      <div><label>Google Maps link</label><input type="text" id="fGmaps"></div>
+      <div><label>Instagram link</label><input type="text" id="fInsta" value="https://instagram.com/halalfooddiary"></div>
+    </div>
+    <label>TikTok link</label><input type="text" id="fTiktok" value="https://tiktok.com/@halalfooddiary">
+    <label>Photo</label>
+    <input type="file" id="fPhoto" accept="image/*">
+    <p class="inline-note">Straight from your phone is fine — it gets cropped square (900×900) automatically.</p>
+    <img id="photoPrev" class="photo-prev hidden">
+    <div class="switch"><input type="checkbox" id="fPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published (visible on the site)</label></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn solid" id="saveBtn" onclick="saveReview()">Save</button>
+      <button class="btn" onclick="closeEditor()">Cancel</button>
+      <button class="btn danger hidden" id="delBtn" onclick="delReview()">Delete</button>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYTICS -->
+<section id="stats" class="hidden">
+  <div class="topbar"><h1 class="serif" style="margin:0">Analytics</h1>
+    <div class="range">
+      <button data-d="7" onclick="loadStats(7)">7 days</button>
+      <button data-d="30" class="on" onclick="loadStats(30)">30 days</button>
+      <button data-d="90" onclick="loadStats(90)">90 days</button>
+    </div>
+  </div>
+  <div class="msg" id="statMsg"></div>
+  <div class="stat-grid">
+    <div class="stat"><b id="sTotal">–</b><span>Total views</span></div>
+    <div class="stat"><b id="sReviews">–</b><span>Review page views</span></div>
+    <div class="stat"><b id="sTop">–</b><span>Most viewed</span></div>
+  </div>
+  <h2 class="serif">Traffic over time</h2>
+  <div class="trend" id="trend"></div>
+  <div class="trend-lbl"><span id="trendFrom"></span><span id="trendTo"></span></div>
+  <h2 class="serif">Views per review</h2><div id="byReview"></div>
+  <h2 class="serif">Views by area</h2><div id="byArea"></div>
+  <h2 class="serif">Where visitors come from</h2><div id="bySource"></div>
+  <h2 class="serif">Top pages</h2><div id="byPath"></div>
+</section>
+
+<!-- ACCOUNT -->
+<section id="account" class="hidden">
+  <h1 class="serif">Account</h1>
+  <div class="msg" id="accMsg"></div>
+  <div class="card" style="max-width:420px">
+    <p class="meta" id="whoami"></p>
+    <label>New password</label><input type="password" id="newPass" autocomplete="new-password">
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button class="btn solid" onclick="changePass()">Change password</button>
+      <button class="btn" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="js/config.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const sb = supabase.createClient(DXB.SUPA_URL, DXB.SUPA_KEY);
+let editingId = null, photoBlob = null;
+
+function say(id, text, kind){ const el=document.getElementById(id); el.textContent=text; el.className='msg '+(kind||'ok'); if(kind!=='bad'){setTimeout(()=>{el.className='msg'},4000);} }
+function tab(t){
+  ['reviews','stats','account'].forEach(x=>{document.getElementById(x).classList.toggle('hidden',x!==t)});
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t==='stats') loadStats(curDays);
+}
+
+/* ---------- auth ---------- */
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ enter(); } 
+}
+function enter(){
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('tabs').classList.remove('hidden');
+  document.getElementById('reviews').classList.remove('hidden');
+  sb.auth.getUser().then(({data})=>{ if(data&&data.user) document.getElementById('whoami').textContent='Signed in as '+data.user.email; });
+  loadReviews();
+}
+async function signIn(){
+  const { error } = await sb.auth.signInWithPassword({ email:val('lEmail'), password:val('lPass') });
+  if(error) return say('loginMsg', error.message, 'bad');
+  enter();
+}
+function toggleSignup(){ document.getElementById('signupBox').classList.toggle('hidden'); }
+async function signUp(){
+  const { error } = await sb.auth.signUp({ email:val('lEmail'), password:val('lPass') });
+  if(error) return say('loginMsg', error.message, 'bad');
+  say('loginMsg','Account created. Check your email for a confirmation link, then sign in.','ok');
+}
+async function forgotPass(){
+  const email = val('lEmail');
+  if(!email) return say('loginMsg','Type your email first, then tap Forgot password.','bad');
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/admin.html' });
+  if(error) return say('loginMsg', error.message, 'bad');
+  say('loginMsg','Password reset email sent.','ok');
+}
+async function changePass(){
+  const p = val('newPass');
+  if(p.length < 8) return say('accMsg','Use at least 8 characters.','bad');
+  const { error } = await sb.auth.updateUser({ password:p });
+  if(error) return say('accMsg', error.message, 'bad');
+  document.getElementById('newPass').value='';
+  say('accMsg','Password changed.','ok');
+}
+async function signOut(){ await sb.auth.signOut(); location.reload(); }
+// handle password-recovery links
+sb.auth.onAuthStateChange((event)=>{ if(event==='PASSWORD_RECOVERY'){ enter(); tab('account'); say('accMsg','Set a new password below.','ok'); } });
+
+/* ---------- reviews ---------- */
+function val(id){ return document.getElementById(id).value.trim(); }
+function set(id,v){ document.getElementById(id).value = v==null?'':v; }
+async function loadReviews(){
+  const { data, error } = await sb.from('reviews').select('*').order('review_date',{ascending:false}).order('created_at',{ascending:false});
+  if(error) return say('revMsg', error.message, 'bad');
+  const el = document.getElementById('revList');
+  el.innerHTML = '';
+  (data||[]).forEach(r=>{
+    const d = document.createElement('div'); d.className='list-item';
+    const img = r.image_url ? `<img src="${r.image_url.startsWith('http')?r.image_url:'/'+r.image_url}" alt="">` : '<img alt="">';
+    d.innerHTML = `${img}<div class="gi"><h3>${esc(r.name)}</h3><p class="meta">${esc(r.area||'')} · <span class="stars">★</span> ${r.rating??'–'}</p></div>
+      <span class="pill ${r.published?'live':''}">${r.published?'Live':'Draft'}</span>
+      <button class="btn small" data-id="${r.id}">Edit</button>`;
+    d.querySelector('button').onclick = ()=>openEditor(r);
+    el.appendChild(d);
+  });
+}
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function newReview(){ openEditor(null); }
+function autoSlug(){ if(editingId) return; set('fSlug', val('fName').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')); }
+function openEditor(r){
+  editingId = r ? r.id : null; photoBlob = null;
+  document.getElementById('edTitle').textContent = r ? 'Edit: '+r.name : 'New review';
+  document.getElementById('delBtn').classList.toggle('hidden', !r);
+  set('fName', r?.name); set('fSlug', r?.slug); set('fArea', r?.area); set('fCuisine', r?.cuisine);
+  set('fRating', r?.rating); set('fPrice', r?.price); set('fBest', r?.best_for); set('fDate', r?.review_date || new Date().toISOString().slice(0,10));
+  set('fLat', r?.lat); set('fLng', r?.lng); set('fBlurb', r?.blurb); set('fBody', r?.body);
+  set('fOrder', r?.order_items); set('fVerdict', r?.verdict);
+  set('fGmaps', r?.gmaps_url); set('fInsta', r?.instagram_url ?? 'https://instagram.com/halalfooddiary'); set('fTiktok', r?.tiktok_url ?? 'https://tiktok.com/@halalfooddiary');
+  document.getElementById('fPub').checked = r ? !!r.published : true;
+  document.getElementById('fPhoto').value = '';
+  const pv = document.getElementById('photoPrev');
+  if(r?.image_url){ pv.src = r.image_url.startsWith('http')?r.image_url:'/'+r.image_url; pv.classList.remove('hidden'); } else pv.classList.add('hidden');
+  document.getElementById('editor').classList.remove('hidden');
+  document.getElementById('editor').scrollIntoView({behavior:'smooth'});
+}
+function closeEditor(){ document.getElementById('editor').classList.add('hidden'); editingId=null; }
+
+document.getElementById('fPhoto').addEventListener('change', function(){
+  const f = this.files[0]; if(!f) return;
+  const img = new Image();
+  img.onload = function(){
+    const s = Math.min(img.width, img.height);
+    const c = document.createElement('canvas'); c.width = 900; c.height = 900;
+    c.getContext('2d').drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, 900, 900);
+    c.toBlob(b=>{ photoBlob = b; const pv=document.getElementById('photoPrev'); pv.src=URL.createObjectURL(b); pv.classList.remove('hidden'); }, 'image/jpeg', .85);
+  };
+  img.src = URL.createObjectURL(f);
+});
+
+async function saveReview(){
+  const btn = document.getElementById('saveBtn'); btn.disabled = true;
+  try{
+    if(!val('fName') || !val('fSlug') || !val('fArea') || !val('fRating')) { say('revMsg','Name, slug, area and rating are required.','bad'); return; }
+    let image_url;
+    if(photoBlob){
+      const path = val('fSlug') + '-' + Date.now() + '.jpg';
+      const { error:upErr } = await sb.storage.from('photos').upload(path, photoBlob, { contentType:'image/jpeg' });
+      if(upErr) throw upErr;
+      image_url = sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+    }
+    const rec = {
+      name:val('fName'), slug:val('fSlug'), area:val('fArea'), cuisine:val('fCuisine')||null,
+      rating: parseFloat(val('fRating')), price:val('fPrice')||null, best_for:val('fBest')||null,
+      review_date: val('fDate')||null,
+      lat: val('fLat')?parseFloat(val('fLat')):null, lng: val('fLng')?parseFloat(val('fLng')):null,
+      blurb: val('fBlurb') || (val('fArea')+' · '+(val('fCuisine')||'')).replace(/ · $/,''),
+      body: val('fBody')||null, order_items: val('fOrder')||null, verdict: val('fVerdict')||null,
+      gmaps_url: val('fGmaps') || (val('fLat')&&val('fLng') ? 'https://www.google.com/maps/search/?api=1&query='+val('fLat')+','+val('fLng') : null),
+      instagram_url: val('fInsta')||null, tiktok_url: val('fTiktok')||null,
+      published: document.getElementById('fPub').checked
+    };
+    if(image_url) rec.image_url = image_url;
+    let error;
+    if(editingId){ ({ error } = await sb.from('reviews').update(rec).eq('id', editingId)); }
+    else { ({ error } = await sb.from('reviews').insert(rec)); }
+    if(error) throw error;
+    say('revMsg','Saved. It\'s live on the site now.','ok');
+    closeEditor(); loadReviews();
+  }catch(e){ say('revMsg', e.message||String(e), 'bad'); }
+  finally{ btn.disabled = false; }
+}
+async function delReview(){
+  if(!editingId) return;
+  if(!confirm('Delete this review? This can\'t be undone.')) return;
+  const { error } = await sb.from('reviews').delete().eq('id', editingId);
+  if(error) return say('revMsg', error.message, 'bad');
+  say('revMsg','Deleted.','ok'); closeEditor(); loadReviews();
+}
+
+/* ---------- analytics ---------- */
+let curDays = 30;
+async function loadStats(days){
+  curDays = days;
+  document.querySelectorAll('.range button').forEach(b=>b.classList.toggle('on', +b.dataset.d===days));
+  const { data, error } = await sb.rpc('analytics_summary', { days });
+  if(error) return say('statMsg', error.message, 'bad');
+  const d = data || {};
+  document.getElementById('sTotal').textContent = d.total ?? 0;
+  const revTotal = (d.by_review||[]).reduce((a,x)=>a+ +x.c, 0);
+  document.getElementById('sReviews').textContent = revTotal;
+  document.getElementById('sTop').textContent = (d.by_review&&d.by_review[0]) ? d.by_review[0].name : '–';
+  // trend
+  const days_map = {}; (d.daily||[]).forEach(x=>days_map[x.d]=+x.c);
+  const t = document.getElementById('trend'); t.innerHTML='';
+  const arr=[]; for(let i=days-1;i>=0;i--){ const dt=new Date(Date.now()-i*864e5).toISOString().slice(0,10); arr.push(days_map[dt]||0); }
+  const mx = Math.max(1,...arr);
+  arr.forEach(v=>{ const b=document.createElement('div'); b.style.height=Math.round(v/mx*100)+'%'; b.title=v+' views'; t.appendChild(b); });
+  document.getElementById('trendFrom').textContent = new Date(Date.now()-(days-1)*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  document.getElementById('trendTo').textContent = 'Today';
+  bars('byReview', d.by_review, x=>x.name + (x.area?' ('+x.area+')':''));
+  bars('byArea', d.by_area, x=>x.area);
+  bars('bySource', d.by_source, x=>x.source);
+  bars('byPath', d.by_path, x=>x.path);
+}
+function bars(id, rows, lbl){
+  const el = document.getElementById(id); el.innerHTML='';
+  rows = rows||[];
+  if(!rows.length){ el.innerHTML='<p class="meta">No data yet.</p>'; return; }
+  const mx = Math.max(...rows.map(r=>+r.c));
+  rows.forEach(r=>{
+    const d=document.createElement('div'); d.className='bar-row';
+    d.innerHTML = `<span class="lbl">${esc(lbl(r))}</span><span class="bar" style="width:${Math.max(2,Math.round(+r.c/mx*55))}%"></span><span class="num">${r.c}</span>`;
+    el.appendChild(d);
+  });
+}
+
+boot();
+</script>
+</body>
+</html>
