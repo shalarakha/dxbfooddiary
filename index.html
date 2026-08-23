@@ -25,7 +25,7 @@ header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:1
 html{scroll-behavior:smooth}
 section[id]{scroll-margin-top:70px}
 .hero{padding:56px 0 40px;text-align:center}
-.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
+.hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
 .search{margin:28px auto 0;display:flex;max-width:520px;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
 .search input{flex:1;border:0;padding:14px 20px;font:inherit;font-size:15px;outline:none}
 .search button{border:0;background:var(--ink);color:#fff;padding:0 22px;font:inherit;font-size:14px;cursor:pointer}
@@ -111,7 +111,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <!-- HOME -->
 <main id="home">
 <section class="hero wrap">
-<h1>Your guide to the best food in Dubai.</h1>
+<h1 id="heroTitle">Your guide to the best restaurants and cafes in Dubai</h1>
 <form class="search" onsubmit="return false"><input type="search" placeholder="Try “ramen JLT” or “brunch Marina”"><button>Search</button></form>
 </section>
 
@@ -192,6 +192,9 @@ map.fitBounds(b,{padding:[30,30]});
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
+</script>
+<script>
+(function(){var h=document.getElementById('heroTitle');if(!h)return;var full=h.textContent;var mh=h.offsetHeight;h.style.minHeight=mh+'px';h.textContent='';h.classList.add('typing');var i=0;(function t(){if(i<=full.length){h.textContent=full.slice(0,i);i++;setTimeout(t,38)}else{h.classList.remove('typing')}})();})();
 </script>
 </body>
 </html>
