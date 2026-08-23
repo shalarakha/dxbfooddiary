@@ -111,7 +111,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 
 <header><div class="wrap nav">
 <a class="brand" href="#" onclick="show('home')">DXB FOOD DIARY</a>
-<ul id="menu"><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="#about" onclick="closeMenu()">About</a></li></ul>
+<ul id="menu"><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li></ul>
 <button class="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()">☰</button>
 </div></header>
 
@@ -123,6 +123,15 @@ in Dubai</h1>
 <form class="search" onsubmit="return false"><input type="search" placeholder="Try “ramen JLT” or “brunch Marina”"><button>Search</button></form>
 </section>
 
+<section class="sec" id="guides"><div class="wrap">
+<div class="sec-head"><h2 class="serif">Guides</h2><a href="guides.html">All guides</a></div>
+<div class="guides" id="guideTiles">
+<a class="guide" href="guides/best-burgers.html" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
+<a class="guide" href="guides/best-tacos.html" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
+<a class="guide" href="guides/coffee-shops.html" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
+<a class="guide" href="guides/best-desserts.html" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
+</div></div></div></section>
+
 <section class="sec" id="reviews"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="reviews.html">All reviews</a></div>
 <div class="grid" id="revGrid">
@@ -132,15 +141,6 @@ in Dubai</h1>
 <a class="card" href="/jungle-bowls"><div class="ph"><img src="img/jungle-bowls.jpg" alt="Jungle Bowls" loading="lazy"></div><h3>Jungle Bowls</h3><p class="meta">DIFC · Bowls & sushi</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
 <a class="card" href="/slrp"><div class="ph"><img src="img/slrp.jpg" alt="SLRP" loading="lazy"></div><h3>SLRP</h3><p class="meta">Dubai Mall · Ramen & sushi</p><p class="meta"><span class="stars">★</span> 4.5 <span style="color:var(--line)">/ 5</span></p></a>
 <a class="card" href="/eleven-green"><div class="ph"><img src="img/eleven-green.jpg" alt="Eleven Green" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
-</div></div></div></section>
-
-<section class="sec" id="guides"><div class="wrap">
-<div class="sec-head"><h2 class="serif">Guides</h2><a href="guides.html">All guides</a></div>
-<div class="guides" id="guideTiles">
-<a class="guide" href="guides/best-burgers.html" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
-<a class="guide" href="guides/best-tacos.html" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
-<a class="guide" href="guides/coffee-shops.html" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
-<a class="guide" href="guides/best-desserts.html" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
 </div></div></div></section>
 
 <section class="sec" id="mapsec"><div class="wrap">
