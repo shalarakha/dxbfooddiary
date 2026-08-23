@@ -194,7 +194,7 @@ let markerLayer=L.layerGroup().addTo(map);
 function escH(t){return (t||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function renderAll(list){
   const g=document.getElementById("revGrid");
-  if(list.length){g.innerHTML=list.map(p=>`<a class="card" href="${escH(p[5])}"><div class="ph">${p[6]?`<img src="${escH(p[6])}" alt="${escH(p[0])}" loading="lazy">`:""}</div><h3>${escH(p[0])}</h3><p class="meta">${escH(p[7]||p[1])}</p><p class="meta"><span class="stars">\u2605</span> ${p[2].toFixed(1)} <span style="color:var(--line)">/ 5</span></p></a>`).join("")}
+  if(list.length){g.innerHTML=list.map(p=>`<a class="card" href="${escH(p[5])}"><div class="ph">${p[6]?`<img src="${escH(p[6])}" alt="${escH(p[0])}" loading="lazy" style="object-position:${p[8]||"50% 50%"}">`:""}</div><h3>${escH(p[0])}</h3><p class="meta">${escH(p[7]||p[1])}</p><p class="meta"><span class="stars">\u2605</span> ${p[2].toFixed(1)} <span style="color:var(--line)">/ 5</span></p></a>`).join("")}
   markerLayer.clearLayers();
   const b=[];
   list.forEach(p=>{if(p[3]==null||p[4]==null)return;L.marker([p[3],p[4]],{icon:pinIcon}).addTo(markerLayer).bindPopup(`<b><a href="${escH(p[5])}" style="border-bottom:1px solid var(--line)">${escH(p[0])}</a></b>${escH(p[1])} \u00b7 \u2605 ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
@@ -202,11 +202,11 @@ function renderAll(list){
 }
 renderAll(fallbackPlaces);
 if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
-  fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb&order=review_date.desc,created_at.desc",{headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}})
+  fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y&order=review_date.desc,created_at.desc",{headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}})
   .then(r=>r.json())
   .then(rows=>{
     if(!Array.isArray(rows)||!rows.length)return;
-    renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||""]));
+    renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"]));
   }).catch(()=>{});
 }
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}

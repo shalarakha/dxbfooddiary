@@ -137,7 +137,12 @@ textarea{min-height:120px;resize:vertical}
     <label>Photo</label>
     <input type="file" id="fPhoto" accept="image/*">
     <p class="inline-note">Straight from your phone is fine — it gets cropped square (900×900) automatically.</p>
-    <img id="photoPrev" class="photo-prev hidden">
+    <div id="focusWrap" class="hidden" style="margin-top:10px;max-width:340px">
+      <div id="focusFrame" style="aspect-ratio:4/3;overflow:hidden;border-radius:8px;position:relative;cursor:grab;touch-action:none;background:var(--sand)">
+        <img id="photoPrev" draggable="false" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;pointer-events:none;user-select:none">
+      </div>
+      <p class="inline-note">Drag the photo up or down to choose how it's framed on the site.</p>
+    </div>
     <div class="switch"><input type="checkbox" id="fPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published (visible on the site)</label></div>
     <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn solid" id="saveBtn" onclick="saveReview()">Save</button>
@@ -191,7 +196,7 @@ textarea{min-height:120px;resize:vertical}
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const sb = supabase.createClient(DXB.SUPA_URL, DXB.SUPA_KEY);
-let editingId = null, photoBlob = null;
+let editingId = null, photoBlob = null, focusX = 50, focusY = 50;
 
 function say(id, text, kind){ const el=document.getElementById(id); el.textContent=text; el.className='msg '+(kind||'ok'); if(kind!=='bad'){setTimeout(()=>{el.className='msg'},4000);} }
 function tab(t){
@@ -274,8 +279,9 @@ function openEditor(r){
   set('fGmaps', r?.gmaps_url); set('fInsta', r?.instagram_url ?? 'https://instagram.com/halalfooddiary'); set('fTiktok', r?.tiktok_url ?? 'https://tiktok.com/@halalfooddiary');
   document.getElementById('fPub').checked = r ? !!r.published : true;
   document.getElementById('fPhoto').value = '';
-  const pv = document.getElementById('photoPrev');
-  if(r?.image_url){ pv.src = r.image_url.startsWith('http')?r.image_url:'/'+r.image_url; pv.classList.remove('hidden'); } else pv.classList.add('hidden');
+  focusX = r?.focus_x ?? 50; focusY = r?.focus_y ?? 50;
+  if(r?.image_url){ showPreview(r.image_url.startsWith('http')?r.image_url:'/'+r.image_url); }
+  else document.getElementById('focusWrap').classList.add('hidden');
   document.getElementById('editor').classList.remove('hidden');
   document.getElementById('editor').scrollIntoView({behavior:'smooth'});
 }
@@ -288,7 +294,7 @@ document.getElementById('fPhoto').addEventListener('change', function(){
     const s = Math.min(img.width, img.height);
     const c = document.createElement('canvas'); c.width = 900; c.height = 900;
     c.getContext('2d').drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, 900, 900);
-    c.toBlob(b=>{ photoBlob = b; const pv=document.getElementById('photoPrev'); pv.src=URL.createObjectURL(b); pv.classList.remove('hidden'); }, 'image/jpeg', .85);
+    c.toBlob(b=>{ photoBlob = b; focusX = 50; focusY = 50; showPreview(URL.createObjectURL(b)); }, 'image/jpeg', .85);
   };
   img.src = URL.createObjectURL(f);
 });
@@ -313,7 +319,8 @@ async function saveReview(){
       body: val('fBody')||null, order_items: val('fOrder')||null, verdict: val('fVerdict')||null,
       gmaps_url: val('fGmaps') || (val('fLat')&&val('fLng') ? 'https://www.google.com/maps/search/?api=1&query='+val('fLat')+','+val('fLng') : null),
       instagram_url: val('fInsta')||null, tiktok_url: val('fTiktok')||null,
-      published: document.getElementById('fPub').checked
+      published: document.getElementById('fPub').checked,
+      focus_x: Math.round(focusX), focus_y: Math.round(focusY)
     };
     if(image_url) rec.image_url = image_url;
     let error;
@@ -332,6 +339,28 @@ async function delReview(){
   if(error) return say('revMsg', error.message, 'bad');
   say('revMsg','Deleted.','ok'); closeEditor(); loadReviews();
 }
+
+
+function showPreview(src){
+  const pv = document.getElementById('photoPrev');
+  pv.src = src;
+  applyFocus();
+  document.getElementById('focusWrap').classList.remove('hidden');
+}
+function applyFocus(){ document.getElementById('photoPrev').style.objectPosition = focusX+'% '+focusY+'%'; }
+(function(){
+  const frame = document.getElementById('focusFrame');
+  let dragging=false, sx=0, sy=0, ox=50, oy=50;
+  frame.addEventListener('pointerdown', e=>{ dragging=true; sx=e.clientX; sy=e.clientY; ox=focusX; oy=focusY; frame.setPointerCapture(e.pointerId); frame.style.cursor='grabbing'; });
+  frame.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    const r = frame.getBoundingClientRect();
+    focusX = Math.max(0, Math.min(100, ox - (e.clientX - sx) * 100 / r.width));
+    focusY = Math.max(0, Math.min(100, oy - (e.clientY - sy) * 100 / r.height));
+    applyFocus();
+  });
+  ['pointerup','pointercancel'].forEach(ev=>frame.addEventListener(ev, ()=>{ dragging=false; frame.style.cursor='grab'; }));
+})();
 
 /* ---------- analytics ---------- */
 let curDays = 30;

@@ -177,7 +177,7 @@ function starStr(r){var full=Math.round(r);var s="";for(var i=1;i<=5;i++)s+=(i<=
     if(r.price)facts+='<div class="fact"><small>Price</small><b>'+esc(r.price)+"</b></div>";
     if(r.best_for)facts+='<div class="fact"><small>Best for</small><b>'+esc(r.best_for)+"</b></div>";
     document.getElementById("rFacts").innerHTML=facts;
-    if(r.image_url){var u=r.image_url.indexOf("http")===0?r.image_url:"/"+r.image_url;document.getElementById("rImg").src=u;document.getElementById("rImg").alt=r.name+" \u2013 "+(r.area||"Dubai");document.getElementById("rGallery").style.display="grid"}
+    if(r.image_url){var u=r.image_url.indexOf("http")===0?r.image_url:"/"+r.image_url;document.getElementById("rImg").src=u;document.getElementById("rImg").style.objectPosition=(r.focus_x==null?50:r.focus_x)+"% "+(r.focus_y==null?50:r.focus_y)+"%";document.getElementById("rImg").alt=r.name+" \u2013 "+(r.area||"Dubai");document.getElementById("rGallery").style.display="grid"}
     var prose="";
     var body=(r.body||"Full written review coming soon. In the meantime the score, prices and map below are live, and you can watch the visit on Instagram or TikTok.");
     body.split(/\n\s*\n/).forEach(function(p){
