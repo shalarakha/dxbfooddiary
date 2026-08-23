@@ -22,7 +22,7 @@ header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:1
 .nav ul{display:flex;gap:24px;list-style:none;font-size:14px;color:rgba(200,202,206,.7);grid-column:3;justify-self:end}
 .nav ul a:hover{color:var(--silver)}
 .burger{display:none;background:none;border:0;font-size:22px;cursor:pointer;color:var(--silver);grid-column:3;justify-self:end}
-html{scroll-behavior:smooth}
+html{scroll-behavior:auto}
 section[id]{scroll-margin-top:70px}
 .hero{padding:56px 0 40px;text-align:center}
 .hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
@@ -226,6 +226,13 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
+document.addEventListener("click",function(e){
+  var a=e.target.closest&&e.target.closest('a[href^="/#"],a[href^="#"]');
+  if(!a)return;
+  var id=a.getAttribute("href").replace(/^\/?#/,"");
+  var el=id&&document.getElementById(id);
+  if(el){e.preventDefault();el.scrollIntoView({behavior:"smooth",block:"start"})}
+});
 </script>
 <script>
 (function(){var h=document.getElementById('heroTitle');if(!h)return;var full=h.textContent;var mh=h.offsetHeight;h.style.minHeight=mh+'px';h.textContent='';h.classList.add('typing');var i=0;(function t(){if(i<=full.length){h.textContent=full.slice(0,i);i++;setTimeout(t,30)}else{h.classList.remove('typing')}})();})();
