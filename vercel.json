@@ -11,6 +11,6 @@
   ],
   "rewrites": [
     { "source": "/g/:slug", "destination": "/guide.html?slug=:slug" },
-    { "source": "/((?!api/|js/|img/|assets/|reviews/|areas/|guides/|admin|guide$|review$|index|map$|reviews$|guides$|areas$|about$|favicon|robots|sitemap|.*\\.).*)", "destination": "/review.html?slug=$1" }
+    { "source": "/:slug", "destination": "/review.html?slug=:slug" }
   ]
 }
