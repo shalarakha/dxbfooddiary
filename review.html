@@ -204,7 +204,7 @@ function starStr(r){var full=Math.round(r);var s="";for(var i=1;i<=5;i++)s+=(i<=
     var dt=fmtD(pub);
     var subHtml='<span class="stars" style="font-size:18px">'+starStr(r.rating)+'</span><span>'+(+r.rating).toFixed(1)+' / 5</span><span>\u00b7</span><span>Reviewed '+dt+'</span>';
     if(mod&&mod!==pub){subHtml+='<span>\u00b7</span><span>Updated '+fmtD(mod)+'</span>'}
-    subHtml+='<span>\u00b7</span><span>Visited &amp; paid myself</span>';
+    subHtml+='<span>\u00b7</span><span>Visited first-hand</span>';
     document.getElementById("rSub").innerHTML=subHtml;
     var facts="";
     if(r.area)facts+='<div class="fact"><small>Area</small><b>'+esc(r.area)+"</b></div>";
