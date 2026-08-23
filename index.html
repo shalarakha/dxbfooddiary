@@ -199,7 +199,7 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
   ]).then(([rows,cols])=>{
     cols=Array.isArray(cols)?cols:[];
     if(Array.isArray(rows)&&rows.length){
-      const toTuple=r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"];
+      const toTuple=r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?("/"+r.page_url):("/"+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"];
       const gridRows=pickHomepage(rows,6).map(toTuple);
       const allRows=rows.map(toTuple);
       renderGrid(gridRows);
@@ -207,7 +207,7 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
       const counts={};
       rows.forEach(r=>{if(r.area)counts[r.area]=(counts[r.area]||0)+1});
       const areaLink={};
-      cols.filter(c=>c.type==="area").forEach(c=>{areaLink[c.area_match||c.title]=c.page_url?c.page_url:("guide.html?slug="+c.slug)});
+      cols.filter(c=>c.type==="area").forEach(c=>{areaLink[c.area_match||c.title]=c.page_url?("/"+c.page_url):("/g/"+c.slug)});
       const names=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
       if(names.length){
         document.getElementById("areaChips").innerHTML=names.map(a=>`<a class="area" href="${escH(areaLink[a]||"#")}">${escH(a)}<small>${counts[a]}</small></a>`).join("");
@@ -216,7 +216,7 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
     const guides=pickHomepage(cols.filter(c=>c.type==="guide"),4);
     if(guides.length){
       document.getElementById("guideTiles").innerHTML=guides.map(g=>{
-        const href=g.page_url?g.page_url:("guide.html?slug="+g.slug);
+        const href=g.page_url?("/"+g.page_url):("/g/"+g.slug);
         const bg=g.cover_url?(g.cover_url.indexOf("http")===0?g.cover_url:g.cover_url):"";
         return `<a class="guide" href="${escH(href)}" ${bg?`style="background-image:url(${escH(bg)})"`:""}><h3 class="serif">${escH(g.title)}</h3>${g.tag?`<span>${escH(g.tag)}</span>`:""}</a>`;
       }).join("");
