@@ -77,6 +77,9 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 .verdict .serif{font-size:26px}
 .verdict .stars{font-size:22px}
 .btns{display:flex;gap:10px;flex-wrap:wrap}
+.social-ic{width:38px;height:38px;border-radius:50%;background:var(--ink);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--ink);display:inline-flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.social-ic:hover{opacity:.85}
+.social-ic svg{width:19px;height:19px}
 .btn{padding:12px 20px;border:1px solid var(--ink);border-radius:999px;font-size:14px}
 .btn.solid{background:var(--ink);color:#fff}
 .map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px;overflow:hidden}
@@ -131,7 +134,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <main>
 <article class="rev" id="article" style="display:none">
 <p class="crumb" id="crumb"></p>
-<h1 class="serif" id="rName"></h1>
+<div class="title-row" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><h1 class="serif" id="rName" style="margin:0"></h1><span id="rSocial" style="display:inline-flex;gap:10px"></span></div>
 <div class="sub" id="rSub"></div>
 <div class="facts" id="rFacts"></div>
 <div class="gallery" id="rGallery" style="grid-template-columns:1fr;display:none"><div class="tall" style="aspect-ratio:4/3"><img id="rImg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover"></div></div>
@@ -198,6 +201,10 @@ function starStr(r){var full=Math.round(r);var s="";for(var i=1;i<=5;i++)s+=(i<=
     window.scrollTo(0,0);
     document.getElementById("crumb").innerHTML='<a href="/">Home</a> \u203a <a href="/#reviews">Reviews</a> \u203a '+esc(r.cuisine||"")+" \u203a "+esc(r.area||"");
     document.getElementById("rName").textContent=r.name;
+    var soc="";
+    if(r.instagram_url)soc+='<a class="social-ic" href="'+esc(r.instagram_url)+'" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>';
+    if(r.tiktok_url)soc+='<a class="social-ic" href="'+esc(r.tiktok_url)+'" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.2 1.5 3.6 3.5 3.9v2.6c-1.3.1-2.5-.2-3.6-.8v5.9c0 3.3-2.4 5.6-5.5 5.6-3 0-5.2-2.3-5.2-5.2 0-3.1 2.6-5.4 5.9-5v2.8c-.4-.1-.8-.2-1.2-.2-1.3 0-2.3 1-2.3 2.4 0 1.4 1 2.4 2.4 2.4 1.4 0 2.4-1 2.4-2.6V3h3.2z"/></svg></a>';
+    document.getElementById("rSocial").innerHTML=soc;
     function fmtD(d){return d?new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):""}
     var pub=r.date_published||r.review_date;
     var mod=r.date_modified||r.review_date;
@@ -245,8 +252,6 @@ function starStr(r){var full=Math.round(r);var s="";for(var i=1;i<=5;i++)s+=(i<=
     }
     var btns="";
     if(r.gmaps_url)btns+='<a class="btn solid" href="'+esc(r.gmaps_url)+'" target="_blank" rel="noopener">Open in Google Maps</a>';
-    if(r.instagram_url)btns+='<a class="btn" href="'+esc(r.instagram_url)+'" target="_blank" rel="noopener">Watch on Instagram</a>';
-    if(r.tiktok_url)btns+='<a class="btn" href="'+esc(r.tiktok_url)+'" target="_blank" rel="noopener">Watch on TikTok</a>';
     document.getElementById("rBtns").innerHTML=btns;
     if(r.lat&&r.lng){
       var el=document.getElementById("map");el.style.display="block";
