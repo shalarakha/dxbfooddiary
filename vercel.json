@@ -10,7 +10,7 @@
     { "source": "/reviews/eleven-green.html", "destination": "/eleven-green", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/g/:slug", "destination": "/guide.html?slug=:slug" },
-    { "source": "/:slug", "destination": "/review.html?slug=:slug" }
+    { "source": "/g/:slug", "destination": "/guide?slug=:slug" },
+    { "source": "/:slug", "destination": "/review?slug=:slug" }
   ]
 }
