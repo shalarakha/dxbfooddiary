@@ -147,6 +147,7 @@ textarea{min-height:120px;resize:vertical}
     </div>
     <label>More photos (gallery on the review page)</label>
     <input type="file" id="fGallery" accept="image/*" multiple>
+    <p class="inline-note">Pick a size for each photo: Wide = full width, the rest sit two-across. To place a photo inside the review text, put <b>[photo 2]</b> (the photo's number) on its own line in the Review text.</p>
     <div id="galList" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>
     <div class="switch"><input type="checkbox" id="fPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published (visible on the site)</label></div>
     <div class="switch"><input type="checkbox" id="fFeat"><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Feature on homepage</label></div>
@@ -337,7 +338,7 @@ function openEditor(r){
   set('fHpo', r?.homepage_order);
   document.getElementById('fPhoto').value = '';
   focusX = r?.focus_x ?? 50; focusY = r?.focus_y ?? 50;
-  galItems = (r && Array.isArray(r.gallery)) ? r.gallery.map(u=>({url:u})) : [];
+  galItems = (r && Array.isArray(r.gallery)) ? r.gallery.map(u=>typeof u==='string'?({url:u,size:'standard'}):({url:u.url,size:u.size||'standard'})) : [];
   renderGallery();
   if(r?.image_url){ showPreview(r.image_url.startsWith('http')?r.image_url:'/'+r.image_url); }
   else document.getElementById('focusWrap').classList.add('hidden');
@@ -386,8 +387,8 @@ async function saveReview(){
       focus_x: Math.round(focusX), focus_y: Math.round(focusY)
     };
     if(image_url) rec.image_url = image_url;
-    for(const g of galItems){ if(g.blob && !g.url){ g.url = await uploadBlob(g.blob, val('fSlug')+'-g'); } }
-    rec.gallery = galItems.map(g=>g.url).filter(Boolean);
+    for(const g of galItems){ if(g.file && !g.url){ const d=GAL_SIZES[g.size]||GAL_SIZES.standard; g.url = await uploadBlob(await cropToBlob(g.file,d[0],d[1]), val('fSlug')+'-g'); } }
+    rec.gallery = galItems.filter(g=>g.url).map(g=>({url:g.url,size:g.size||'standard'}));
     let error;
     if(editingId){ ({ error } = await sb.from('reviews').update(rec).eq('id', editingId)); }
     else { ({ error } = await sb.from('reviews').insert(rec)); }
@@ -429,12 +430,16 @@ function applyFocus(){ document.getElementById('photoPrev').style.objectPosition
 
 /* ---------- gallery ---------- */
 let galItems = [];
+const GAL_SIZES={wide:[1600,1000],standard:[1200,900],square:[1000,1000],tall:[900,1200]};
+const GAL_AR={wide:'16/10',standard:'4/3',square:'1/1',tall:'3/4'};
 function renderGallery(){
   const el = document.getElementById('galList'); el.innerHTML='';
   galItems.forEach((g,i)=>{
     const d = document.createElement('div');
-    d.style.cssText='position:relative;width:110px';
-    d.innerHTML = `<img src="${g.preview||g.url}" style="width:110px;height:82px;object-fit:cover;border-radius:8px;background:var(--sand)">
+    d.style.cssText='position:relative;width:130px';
+    const sz=g.size||'standard';
+    d.innerHTML = `<div style="font-size:11px;color:var(--mute);margin-bottom:3px">Photo ${i+1}</div><img src="${g.preview||g.url}" style="width:130px;aspect-ratio:${GAL_AR[sz]};object-fit:cover;border-radius:8px;background:var(--sand)">
+      <select onchange="galItems[${i}].size=this.value;renderGallery()" style="width:100%;margin-top:4px;font-size:12px;padding:3px">${['wide','standard','square','tall'].map(s=>`<option value="${s}" ${s===sz?'selected':''}>${s[0].toUpperCase()+s.slice(1)}</option>`).join('')}</select>
       <div style="display:flex;gap:4px;margin-top:4px;justify-content:center">
         <button class="btn small" style="padding:2px 8px" onclick="galMove(${i},-1)">\u25b2</button>
         <button class="btn small" style="padding:2px 8px" onclick="galMove(${i},1)">\u25bc</button>
@@ -462,8 +467,7 @@ function cropToBlob(file, w, h){
 }
 document.getElementById('fGallery').addEventListener('change', async function(){
   for(const f of this.files){
-    const b = await cropToBlob(f,1200,900);
-    galItems.push({ blob:b, preview:URL.createObjectURL(b) });
+    galItems.push({ file:f, size:'standard', preview:URL.createObjectURL(f) });
   }
   this.value=''; renderGallery();
 });
