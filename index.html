@@ -29,6 +29,7 @@ section[id]{scroll-margin-top:70px}
 .hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
 .search{margin:28px auto 0;display:flex;max-width:520px;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
 @media (max-width:560px){.search{margin:28px 16px 0;max-width:none}}
+.search-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}.search-links a{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px}.search-links a small{color:var(--mute);margin-left:6px}
 .search input{flex:1;border:0;padding:14px 20px;font:inherit;font-size:15px;outline:none}
 .search button{border:0;background:var(--ink);color:#fff;padding:0 22px;font:inherit;font-size:14px;cursor:pointer}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
@@ -121,9 +122,10 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 <section class="hero wrap">
 <h1 id="heroTitle">Your guide to the best restaurants and cafes
 in Dubai</h1>
-<form class="search" onsubmit="return false"><input type="search" placeholder="Try “ramen JLT” or “brunch Marina”"><button>Search</button></form>
+<form class="search" onsubmit="return doSearch()"><input type="search" id="q" placeholder="Try “ramen JLT” or “brunch Marina”" aria-label="Search reviews and guides" oninput="if(!this.value)clearSearch()"><button type="submit">Search</button></form>
 </section>
 
+<section class="sec hidden" id="searchsec"><div class="wrap"><div class="sec-head"><h2 class="serif" id="searchHead">Results</h2><a href="#" onclick="clearSearch();return false">Clear</a></div><div class="grid" id="searchGrid"></div><div id="searchLinks" class="search-links"></div><p id="searchEmpty" class="meta hidden">Nothing matched. Try a dish, an area or a restaurant name, e.g. “burger”, “Jumeirah”, “SLRP”.</p></div></section>
 <section class="sec" id="guides"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Guides</h2><a href="/guides">All guides</a></div>
 <div class="guides" id="guideTiles">
@@ -177,6 +179,7 @@ in Dubai</h1>
 <script src="js/track.js" defer></script>
 <script>
 const fallbackPlaces=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455,"/bkry","img/bkry.jpg","Alserkal Avenue \u00b7 Bakery & coffee"],["Heal","Jumeirah",4.1,25.15877,55.20925,"/heal","img/heal.jpg","Jumeirah \u00b7 Sourdough & coffee"],["ORTO","Jumeirah",4.2,25.19501,55.23580,"/orto","img/orto.jpg","Jumeirah \u00b7 Brunch"],["Jungle Bowls","DIFC",4.0,25.20774,55.27827,"/jungle-bowls","img/jungle-bowls.jpg","DIFC \u00b7 Bowls & sushi"],["SLRP","Dubai Mall",4.5,25.19586,55.27998,"/slrp","img/slrp.jpg","Dubai Mall \u00b7 Ramen & sushi"],["Eleven Green","Jumeirah",4.1,25.14461,55.19861,"/eleven-green","img/eleven-green.jpg","Jumeirah \u00b7 Burgers"]];
+var searchReviews=fallbackPlaces.slice(), searchCols=[];
 const map=L.map("map",{scrollWheelZoom:false,zoomControl:true}).setView([25.18,55.24],11);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"&copy; OpenStreetMap &copy; CARTO",maxZoom:19}).addTo(map);
 const pinIcon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
@@ -212,11 +215,11 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
     fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y,featured,homepage_order&order=review_date.desc,created_at.desc",hd).then(r=>r.json()).catch(()=>[]),
     fetch(DXB.SUPA_URL+"/rest/v1/collections?select=slug,type,title,tag,cover_url,page_url,area_match,sort_order,featured,homepage_order&order=sort_order",hd).then(r=>r.json()).catch(()=>[])
   ]).then(([rows,cols])=>{
-    cols=Array.isArray(cols)?cols:[];
+    cols=Array.isArray(cols)?cols:[]; searchCols=cols;
     if(Array.isArray(rows)&&rows.length){
       const toTuple=r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?("/"+r.page_url):("/"+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"];
       const gridRows=pickHomepage(rows,6).map(toTuple);
-      const allRows=rows.map(toTuple);
+      const allRows=rows.map(toTuple); searchReviews=allRows;
       renderGrid(gridRows);
       renderMap(allRows);
       const counts={};
@@ -238,6 +241,23 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
     }
   });
 }
+function doSearch(){
+  const q=(document.getElementById("q").value||"").trim().toLowerCase();
+  if(!q){clearSearch();return false}
+  const words=q.split(/\s+/);
+  const hit=t=>{t=(t||"").toLowerCase();return words.every(w=>t.indexOf(w)>=0)};
+  const revs=searchReviews.filter(p=>hit([p[0],p[1],p[7]].join(" ")));
+  const cols=searchCols.filter(c=>hit([c.title,c.tag,c.type,c.area_match].join(" ")));
+  const sec=document.getElementById("searchsec");sec.classList.remove("hidden");
+  document.getElementById("searchHead").textContent=(revs.length+cols.length)+" result"+((revs.length+cols.length)===1?"":"s")+" for \u201c"+document.getElementById("q").value.trim()+"\u201d";
+  const g=document.getElementById("searchGrid");
+  g.innerHTML=revs.map(p=>`<a class="card" href="${escH(p[5])}"><div class="ph">${p[6]?`<img src="${escH(p[6])}" alt="${escH(p[0])}" loading="lazy" style="object-position:${p[8]||"50% 50%"}">`:""}</div><h3>${escH(p[0])}</h3><p class="meta">${escH(p[7]||p[1])}</p><p class="meta"><span class="stars">\u2605</span> ${p[2].toFixed(1)} <span style="color:var(--line)">/ 5</span></p></a>`).join("");
+  document.getElementById("searchLinks").innerHTML=cols.map(c=>`<a href="${escH(c.page_url?("/"+c.page_url):("/g/"+c.slug))}">${escH(c.type==="area"?("Where to eat in "+c.title):c.title)}<small>${escH(c.type==="area"?"Area":"Guide")}</small></a>`).join("");
+  document.getElementById("searchEmpty").classList.toggle("hidden",revs.length+cols.length>0);
+  sec.scrollIntoView({behavior:"smooth",block:"start"});
+  return false;
+}
+function clearSearch(){document.getElementById("searchsec").classList.add("hidden");document.getElementById("q").value="";}
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
