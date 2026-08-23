@@ -119,12 +119,12 @@ in Dubai</h1>
 <section class="sec" id="reviews"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="#">All reviews</a></div>
 <div class="grid">
-<a class="card" href="#"><div class="ph"><img src="img/bkry.jpg" alt="BKRY" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
-<a class="card" href="#"><div class="ph"><img src="img/heal.jpg" alt="Heal" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
-<a class="card" href="#"><div class="ph"><img src="img/orto.jpg" alt="ORTO" loading="lazy"></div><h3>ORTO</h3><p class="meta">Jumeirah · Brunch</p><p class="meta"><span class="stars">★</span> 4.2 <span style="color:var(--line)">/ 5</span></p></a>
-<a class="card" href="#"><div class="ph"><img src="img/jungle-bowls.jpg" alt="Jungle Bowls" loading="lazy"></div><h3>Jungle Bowls</h3><p class="meta">DIFC · Bowls & sushi</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
-<a class="card" href="#"><div class="ph"><img src="img/slrp.jpg" alt="SLRP" loading="lazy"></div><h3>SLRP</h3><p class="meta">Dubai Mall · Ramen & sushi</p><p class="meta"><span class="stars">★</span> 4.5 <span style="color:var(--line)">/ 5</span></p></a>
-<a class="card" href="#"><div class="ph"><img src="img/eleven-green.jpg" alt="Eleven Green" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/bkry.html"><div class="ph"><img src="img/bkry.jpg" alt="BKRY" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/heal.html"><div class="ph"><img src="img/heal.jpg" alt="Heal" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/orto.html"><div class="ph"><img src="img/orto.jpg" alt="ORTO" loading="lazy"></div><h3>ORTO</h3><p class="meta">Jumeirah · Brunch</p><p class="meta"><span class="stars">★</span> 4.2 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/jungle-bowls.html"><div class="ph"><img src="img/jungle-bowls.jpg" alt="Jungle Bowls" loading="lazy"></div><h3>Jungle Bowls</h3><p class="meta">DIFC · Bowls & sushi</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/slrp.html"><div class="ph"><img src="img/slrp.jpg" alt="SLRP" loading="lazy"></div><h3>SLRP</h3><p class="meta">Dubai Mall · Ramen & sushi</p><p class="meta"><span class="stars">★</span> 4.5 <span style="color:var(--line)">/ 5</span></p></a>
+<a class="card" href="reviews/eleven-green.html"><div class="ph"><img src="img/eleven-green.jpg" alt="Eleven Green" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
 </div></div></div></section>
 
 <section class="sec" id="guides"><div class="wrap">
@@ -184,11 +184,11 @@ in Dubai</h1>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const places=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455],["Heal","Jumeirah",4.1,25.15877,55.20925],["ORTO","Jumeirah",4.2,25.19501,55.23580],["Jungle Bowls","DIFC",4.0,25.20774,55.27827],["SLRP","Dubai Mall",4.5,25.19586,55.27998],["Eleven Green","Jumeirah",4.1,25.14461,55.19861]];
+const places=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455,"bkry"],["Heal","Jumeirah",4.1,25.15877,55.20925,"heal"],["ORTO","Jumeirah",4.2,25.19501,55.23580,"orto"],["Jungle Bowls","DIFC",4.0,25.20774,55.27827,"jungle-bowls"],["SLRP","Dubai Mall",4.5,25.19586,55.27998,"slrp"],["Eleven Green","Jumeirah",4.1,25.14461,55.19861,"eleven-green"]];
 const map=L.map("map",{scrollWheelZoom:false,zoomControl:true}).setView([25.18,55.24],11);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"&copy; OpenStreetMap &copy; CARTO",maxZoom:19}).addTo(map);
 const icon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
-const b=[];places.forEach(p=>{L.marker([p[3],p[4]],{icon}).addTo(map).bindPopup(`<b>${p[0]}</b>${p[1]} · ★ ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
+const b=[];places.forEach(p=>{L.marker([p[3],p[4]],{icon}).addTo(map).bindPopup(`<b><a href="reviews/${p[5]}.html" style="border-bottom:1px solid var(--line)">${p[0]}</a></b>${p[1]} · ★ ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
 map.fitBounds(b,{padding:[30,30]});
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
