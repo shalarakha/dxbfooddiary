@@ -87,9 +87,9 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 .related h2{font-size:24px;margin-bottom:16px}
 .hidden{display:none}
 @media (max-width:760px){.hero h1{white-space:pre-line}
- .nav ul{display:none;position:absolute;top:60px;left:0;right:0;background:var(--bar);flex-direction:column;gap:0;padding:8px 0}
+ .nav ul{display:none;position:absolute;top:60px;left:0;right:0;width:100%;grid-column:1/-1;justify-self:stretch;background:var(--bar);flex-direction:column;gap:0;padding:8px 0;text-align:left}
  .nav ul.open{display:flex}
- .nav ul li a{display:block;padding:14px 20px;font-size:16px;color:var(--silver)}
+ .nav ul li a{display:block;padding:16px 24px;font-size:17px;color:var(--silver)}
  .burger{display:block}
  .grid{grid-template-columns:repeat(2,1fr);gap:20px 14px}
  .guides{grid-template-columns:1fr}
@@ -105,7 +105,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 
 <header><div class="wrap nav">
 <a class="brand" href="#" onclick="show('home')">DXB Food Diary</a>
-<ul id="menu"><li><a href="#reviews" onclick="closeMenu()">Reviews</a></li><li><a href="#guides" onclick="closeMenu()">Guides</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="#mapsec" onclick="closeMenu()">Map</a></li><li><a href="#about" onclick="closeMenu()">About</a></li></ul>
+<ul id="menu"><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li><li><a href="#about" onclick="closeMenu()">About</a></li></ul>
 <button class="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()">☰</button>
 </div></header>
 
