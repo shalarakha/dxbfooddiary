@@ -215,7 +215,7 @@ function closeMenu(){document.getElementById("menu").classList.remove("open");do
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
 </script>
 <script>
-(function(){var h=document.getElementById('heroTitle');if(!h)return;var full=h.textContent;var mh=h.offsetHeight;h.style.minHeight=mh+'px';h.textContent='';h.classList.add('typing');var i=0;(function t(){if(i<=full.length){h.textContent=full.slice(0,i);i++;setTimeout(t,18)}else{h.classList.remove('typing')}})();})();
+(function(){var h=document.getElementById('heroTitle');if(!h)return;var full=h.textContent;var mh=h.offsetHeight;h.style.minHeight=mh+'px';h.textContent='';h.classList.add('typing');var i=0;(function t(){if(i<=full.length){h.textContent=full.slice(0,i);i++;setTimeout(t,30)}else{h.classList.remove('typing')}})();})();
 </script>
 </body>
 </html>
