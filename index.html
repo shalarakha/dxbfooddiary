@@ -42,9 +42,11 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff
 .meta{font-size:13px;color:var(--mute);margin-top:2px}
 .stars{color:var(--star);letter-spacing:1px}
 .guides{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.guide{padding:24px;background:var(--sand);border-radius:8px;display:flex;justify-content:space-between;align-items:flex-end;min-height:140px}
-.guide h3{font-size:24px;max-width:260px;line-height:1.1}
-.guide span{font-size:12px;color:var(--mute)}
+.guide{padding:24px;background:var(--sand) center/cover no-repeat;border-radius:8px;display:flex;justify-content:space-between;align-items:flex-end;min-height:220px;position:relative;overflow:hidden;color:#fff}
+.guide::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,0) 60%)}
+.guide h3,.guide span{position:relative}
+.guide h3{font-size:26px;max-width:280px;line-height:1.1}
+.guide span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
 .areas{display:flex;flex-wrap:wrap;gap:10px}
 .area{padding:10px 18px;border:1px solid var(--line);border-radius:6px;font-size:14px}
 .area small{color:var(--mute);margin-left:6px}
@@ -122,11 +124,11 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <section class="sec"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Guides</h2><a href="#">All guides</a></div>
 <div class="guides">
-<a class="guide" href="#"><h3 class="serif">Best brunch in Dubai Marina</h3><span>12 places</span></a>
-<a class="guide" href="#"><h3 class="serif">Dubai's best burgers, ranked</h3><span>15 places</span></a>
-<a class="guide" href="#"><h3 class="serif">Where to eat in Old Dubai</h3><span>9 places</span></a>
-<a class="guide" href="#"><h3 class="serif">Great meals under AED 50</h3><span>20 places</span></a>
-</div></div></section>
+<a class="guide" href="#" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
+<a class="guide" href="#" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
+<a class="guide" href="#" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
+<a class="guide" href="#" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
+</div></div></div></section>
 
 <section class="sec"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Browse by area</h2><a href="#">View map</a></div>
