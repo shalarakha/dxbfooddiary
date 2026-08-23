@@ -237,21 +237,30 @@ function starStr(r){var full=Math.round(r);var s="";for(var i=1;i<=5;i++)s+=(i<=
     document.getElementById("rFacts").innerHTML=facts;
     var imgs=[];
     if(r.image_url)imgs.push({u:r.image_url.indexOf("http")===0?r.image_url:"/"+r.image_url,f:(r.focus_x==null?50:r.focus_x)+"% "+(r.focus_y==null?50:r.focus_y)+"%"});
-    (Array.isArray(r.gallery)?r.gallery:[]).forEach(function(u){imgs.push({u:u.indexOf("http")===0?u:"/"+u,f:"50% 50%"})});
+    if(imgs.length)imgs[0].size="wide";
+    var GAL_AR={wide:"16/10",standard:"4/3",square:"1/1",tall:"3/4"};
+    var gal=(Array.isArray(r.gallery)?r.gallery:[]).map(function(u){var o=typeof u==="string"?{url:u}:u;return {u:o.url.indexOf("http")===0?o.url:"/"+o.url,f:"50% 50%",size:GAL_AR[o.size]?o.size:"standard"}});
+    var used={};
+    var bodyText=r.body||"";
+    bodyText.replace(/^\s*\[photo\s*(\d+)\]\s*$/gim,function(m,n){used[+n-1]=true;return m});
+    gal.forEach(function(im,i){if(!used[i])imgs.push(im)});
+    function figHTML(im,full){
+      var span=(full||im.size==="wide")?"grid-column:1/-1;":"";
+      var ar=im.size==="tall"?"3/4":GAL_AR[im.size]||"4/3";
+      return '<div style="'+span+'aspect-ratio:'+ar+';overflow:hidden;border-radius:12px;background:var(--sand)"><img src="'+esc(im.u)+'" alt="'+esc(r.name)+'" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:'+im.f+'"></div>';
+    }
     if(imgs.length){
       var g=document.getElementById("rGallery");
       g.style.display="grid";g.style.gap="10px";
       g.style.gridTemplateColumns=imgs.length>1?"1fr 1fr":"1fr";
-      g.innerHTML=imgs.map(function(im,i){
-        var span=i===0?"grid-column:1/-1;":"";
-        var ar=i===0?"aspect-ratio:16/10":"aspect-ratio:4/3";
-        return '<div style="'+span+ar+';overflow:hidden;border-radius:12px;background:var(--sand)"><img src="'+esc(im.u)+'" alt="'+esc(r.name)+'" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:'+im.f+'"></div>';
-      }).join("");
+      g.innerHTML=imgs.map(function(im){return figHTML(im,false)}).join("");
     }
     var prose="";
     var body=(r.body||"Full written review coming soon. In the meantime the score, prices and map below are live, and you can watch the visit on Instagram or TikTok.");
     body.split(/\n\s*\n/).forEach(function(p){
       p=p.trim();if(!p)return;
+      var pm=p.match(/^\[photo\s*(\d+)\]$/i);
+      if(pm){var gi=gal[+pm[1]-1];if(gi)prose+='<div style="margin:28px 0">'+figHTML(gi,true)+'</div>';return}
       if(p.indexOf("## ")===0){prose+='<h2 class="serif">'+esc(p.slice(3))+"</h2>"}
       else{prose+="<p>"+esc(p).replace(/\n/g,"<br>")+"</p>"}
     });
