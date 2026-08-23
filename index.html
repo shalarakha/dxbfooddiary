@@ -54,7 +54,13 @@ section[id]{scroll-margin-top:70px}
 .areas{display:flex;flex-wrap:wrap;gap:10px}
 .area{padding:10px 18px;border:1px solid var(--line);border-radius:6px;font-size:14px}
 .area small{color:var(--mute);margin-left:6px}
-footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(--mute);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:var(--mute);max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+.foot-links a{color:var(--mute)}.foot-links a:hover{color:var(--ink)}
+.foot-icons{display:flex;gap:20px;justify-content:center}
+.foot-icons a{color:var(--mute);display:inline-flex;transition:color .15s}
+.foot-icons a:hover{color:var(--ink)}
+.foot-icons svg{width:22px;height:22px}
 /* review page */
 .rev{max-width:720px;margin:0 auto;padding:48px 20px}
 .crumb{font-size:13px;color:var(--mute)}
@@ -105,7 +111,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 
 <header><div class="wrap nav">
 <a class="brand" href="#" onclick="show('home')">DXB FOOD DIARY</a>
-<ul id="menu"><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li></ul>
+<ul id="menu"><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="#about" onclick="closeMenu()">About</a></li></ul>
 <button class="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()">☰</button>
 </div></header>
 
@@ -155,7 +161,15 @@ in Dubai</h1>
 
 
 
-<footer class="wrap"><span>© 2026 DXB Food Diary</span><span>Reviews · Guides · Areas · Map · About</span><span><a href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener">Instagram</a> · <a href="https://tiktok.com/@halalfooddiary" target="_blank" rel="noopener">TikTok</a> · <a href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener">Work with me</a></span></footer>
+<footer>
+<div class="foot-links"><a href="/guides">Guides</a><a href="/reviews">Reviews</a><a href="/map">Map</a><a href="#areas">Areas</a><a href="#about">About</a></div>
+<div class="foot-icons">
+<a href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+<a href="https://tiktok.com/@halalfooddiary" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.2 1.5 3.6 3.5 3.9v2.6c-1.3.1-2.5-.2-3.6-.8v5.9c0 3.3-2.4 5.6-5.5 5.6-3 0-5.2-2.3-5.2-5.2 0-3.1 2.6-5.4 5.9-5v2.8c-.4-.1-.8-.2-1.2-.2-1.3 0-2.3 1-2.3 2.4 0 1.4 1 2.4 2.4 2.4 1.4 0 2.4-1 2.4-2.6V3h3.2z"/></svg></a>
+<a href="mailto:hello@halalfooddiary.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6l9 6.5L21 6"/></svg></a>
+</div>
+<div>© 2026 DXB Food Diary</div>
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/config.js"></script>
