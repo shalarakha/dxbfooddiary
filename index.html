@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <title>DXB Food Diary — Best Restaurants & Cafes in Dubai</title>
 <meta name="description" content="Your guide to the best restaurants and cafes in Dubai. Honest reviews, area guides and a map of the best places to eat.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +25,7 @@ header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:1
 .burger{display:none;background:none;border:0;font-size:22px;line-height:1;cursor:pointer;color:var(--silver);grid-column:3;justify-self:end;padding:0}
 html{scroll-behavior:auto}
 section[id]{scroll-margin-top:70px}
-.hero{padding:56px 0 40px;text-align:center}
+.hero{padding:48px 0 40px;text-align:center}
 .hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
 .search{margin:28px auto 0;display:flex;max-width:520px;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
 @media (max-width:560px){.search{margin:28px 16px 0;max-width:none}}
@@ -36,7 +37,7 @@ section[id]{scroll-margin-top:70px}
 .sec{padding:40px 0;border-top:1px solid var(--line)}
 .hero+.sec{border-top:0;padding-top:8px}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
-.sec-head h2{font-size:30px}
+.sec-head h2{font-size:28px}
 .sec-head a{font-size:13px;color:var(--mute);border-bottom:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px}
 .card .ph{aspect-ratio:4/3;background:var(--sand);border-radius:6px;overflow:hidden}
@@ -62,9 +63,9 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .foot-icons a:hover{color:var(--ink)}
 .foot-icons svg{width:22px;height:22px}
 /* review page */
-.rev{max-width:720px;margin:0 auto;padding:48px 20px}
+.rev{max-width:760px;margin:0 auto;padding:48px 20px}.rev p{font-size:17px;line-height:1.75}
 .crumb{font-size:13px;color:var(--mute)}
-.rev h1{font-size:clamp(36px,6vw,56px);line-height:1.05;margin-top:12px;letter-spacing:-.02em}
+.rev h1{font-size:clamp(34px,5.5vw,54px);line-height:1.08;margin-top:12px;letter-spacing:-.02em}
 .rev .sub{display:flex;gap:14px;flex-wrap:wrap;color:var(--mute);font-size:14px;margin-top:10px;align-items:center}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;margin:28px 0;overflow:hidden}
 .fact{padding:14px 16px;border-right:1px solid var(--line)}
@@ -88,9 +89,9 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .btn.solid{background:var(--ink);color:#fff}
 .map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px;overflow:hidden}
 .leaflet-container{font-family:"DM Sans",sans-serif}.leaflet-popup-content{font-size:13px;margin:10px 14px}.leaflet-popup-content b{display:block;font-size:14px}.leaflet-popup-content-wrapper{border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12)}.pin{width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:30px}
+.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:28px}
 .related{margin-top:48px}
-.related h2{font-size:24px;margin-bottom:16px}
+.related h2{font-size:28px;margin-bottom:16px}
 .hidden{display:none}
 @media (max-width:1024px){.hero h1{white-space:pre-line}
  .nav ul{display:none;position:absolute;top:60px;left:0;right:0;width:100%;grid-column:1/-1;justify-self:stretch;background:var(--bar);flex-direction:column;gap:0;padding:8px 0;text-align:left}
@@ -105,12 +106,12 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
  .verdict{flex-direction:column;align-items:flex-start}
  .about{grid-template-columns:1fr;gap:16px}.about-ph{width:110px;height:110px}
 }
-</style>
+@media (max-width:400px){.brand{font-size:16px;letter-spacing:.4em;padding-left:.4em}}</style>
 </head>
 <body>
 
 <header><div class="wrap nav">
-<a class="brand" href="#" onclick="show('home')">DXB FOOD DIARY</a>
+<a class="brand" href="/">DXB FOOD DIARY</a>
 <ul id="menu"><li><a href="/guides" onclick="closeMenu()">Guides</a></li><li><a href="/reviews" onclick="closeMenu()">Reviews</a></li><li><a href="/map" onclick="closeMenu()">Map</a></li></ul>
 <button class="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="6.5" x2="18" y2="6.5"/><line x1="4" y1="11" x2="18" y2="11"/><line x1="4" y1="15.5" x2="18" y2="15.5"/></svg></button>
 </div></header>
@@ -124,16 +125,16 @@ in Dubai</h1>
 </section>
 
 <section class="sec" id="guides"><div class="wrap">
-<div class="sec-head"><h2 class="serif">Guides</h2><a href="guides.html">All guides</a></div>
+<div class="sec-head"><h2 class="serif">Guides</h2><a href="/guides">All guides</a></div>
 <div class="guides" id="guideTiles">
-<a class="guide" href="guides/best-burgers.html" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
-<a class="guide" href="guides/best-tacos.html" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
-<a class="guide" href="guides/coffee-shops.html" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
-<a class="guide" href="guides/best-desserts.html" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
+<a class="guide" href="/guides/best-burgers" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
+<a class="guide" href="/guides/best-tacos" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
+<a class="guide" href="/guides/coffee-shops" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
+<a class="guide" href="/guides/best-desserts" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
 </div></div></div></section>
 
 <section class="sec" id="reviews"><div class="wrap">
-<div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="reviews.html">All reviews</a></div>
+<div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="/reviews">All reviews</a></div>
 <div class="grid" id="revGrid">
 <a class="card" href="/bkry"><div class="ph"><img src="img/bkry.jpg" alt="BKRY" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
 <a class="card" href="/heal"><div class="ph"><img src="img/heal.jpg" alt="Heal" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
@@ -144,14 +145,14 @@ in Dubai</h1>
 </div></div></div></section>
 
 <section class="sec" id="mapsec"><div class="wrap">
-<div class="sec-head"><h2 class="serif">Every review on one map</h2><a href="map.html">Open full map</a></div>
+<div class="sec-head"><h2 class="serif">Every review on one map</h2><a href="/map">Open full map</a></div>
 <div id="map" class="map" style="margin-top:0;height:340px;z-index:0"></div>
 </div></section>
 
 <section class="sec" id="areas"><div class="wrap">
-<div class="sec-head"><h2 class="serif">Browse by area</h2><a href="map.html">View map</a></div>
+<div class="sec-head"><h2 class="serif">Browse by area</h2><a href="/map">View map</a></div>
 <div class="areas" id="areaChips">
-<a class="area" href="areas/downtown.html">Downtown<small>0</small></a><a class="area" href="areas/marina.html">Marina<small>0</small></a><a class="area" href="areas/jlt.html">JLT<small>0</small></a><a class="area" href="areas/jumeirah.html">Jumeirah<small>3</small></a><a class="area" href="areas/business-bay.html">Business Bay<small>0</small></a><a class="area" href="areas/deira.html">Deira<small>0</small></a><a class="area" href="areas/bur-dubai.html">Bur Dubai<small>0</small></a><a class="area" href="areas/al-quoz.html">Al Quoz<small>0</small></a><a class="area" href="areas/difc.html">DIFC<small>1</small></a><a class="area" href="areas/satwa.html">Satwa<small>0</small></a>
+<a class="area" href="/areas/downtown">Downtown<small>0</small></a><a class="area" href="/areas/marina">Marina<small>0</small></a><a class="area" href="/areas/jlt">JLT<small>0</small></a><a class="area" href="/areas/jumeirah">Jumeirah<small>3</small></a><a class="area" href="/areas/business-bay">Business Bay<small>0</small></a><a class="area" href="/areas/deira">Deira<small>0</small></a><a class="area" href="/areas/bur-dubai">Bur Dubai<small>0</small></a><a class="area" href="/areas/al-quoz">Al Quoz<small>0</small></a><a class="area" href="/areas/difc">DIFC<small>1</small></a><a class="area" href="/areas/satwa">Satwa<small>0</small></a>
 </div></div></section>
 
 <section class="sec" id="about"><div class="wrap about" style="grid-template-columns:1fr">

@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <title>Dubai's best burgers, ranked (2026) | DXB Food Diary</title>
-<meta name="robots" content="noindex"><!-- remove noindex once rankings are confirmed -->
+<!-- remove noindex once rankings are confirmed -->
 <meta name="description" content="The best burgers in Dubai, ranked: from the Time Out 2026 winner to beach sliders. Honest picks, prices and where to find them.">
-<link rel="canonical" href="https://dxbfooddiary.com/guides/best-burgers.html">
+<link rel="canonical" href="https://dxbfooddiary.com/guides/best-burgers">
 <meta property="og:title" content="Dubai's best burgers, ranked">
 <meta property="og:description" content="The best burgers in Dubai, ranked: from the Time Out 2026 winner to beach sliders. Honest picks, prices and where to find them.">
-<meta property="og:image" content="https://dxbfooddiary.com/img/guide-best-burgers.jpg">
+<meta property="og:image" content="https://dxbfooddiary.com/img/guide-burgers.jpg">
 <meta property="og:type" content="article">
 <script type="application/ld+json">
 {
@@ -46,7 +47,7 @@ header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:1
 .burger{display:none;background:none;border:0;font-size:22px;line-height:1;cursor:pointer;color:var(--silver);grid-column:3;justify-self:end;padding:0}
 html{scroll-behavior:smooth}
 section[id]{scroll-margin-top:70px}
-.hero{padding:56px 0 40px;text-align:center}
+.hero{padding:48px 0 40px;text-align:center}
 .hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
 .search{margin:28px auto 0;display:flex;max-width:520px;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
 .search input{flex:1;border:0;padding:14px 20px;font:inherit;font-size:15px;outline:none}
@@ -57,7 +58,7 @@ section[id]{scroll-margin-top:70px}
 .sec{padding:40px 0;border-top:1px solid var(--line)}
 .hero+.sec{border-top:0;padding-top:8px}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
-.sec-head h2{font-size:30px}
+.sec-head h2{font-size:28px}
 .sec-head a{font-size:13px;color:var(--mute);border-bottom:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px}
 .card .ph{aspect-ratio:4/3;background:var(--sand);border-radius:6px;overflow:hidden}
@@ -77,9 +78,9 @@ section[id]{scroll-margin-top:70px}
 .area small{color:var(--mute);margin-left:6px}
 
 /* review page */
-.rev{max-width:720px;margin:0 auto;padding:48px 20px}
+.rev{max-width:760px;margin:0 auto;padding:48px 20px}.rev p{font-size:17px;line-height:1.75}
 .crumb{font-size:13px;color:var(--mute)}
-.rev h1{font-size:clamp(36px,6vw,56px);line-height:1.05;margin-top:12px;letter-spacing:-.02em}
+.rev h1{font-size:clamp(34px,5.5vw,54px);line-height:1.08;margin-top:12px;letter-spacing:-.02em}
 .rev .sub{display:flex;gap:14px;flex-wrap:wrap;color:var(--mute);font-size:14px;margin-top:10px;align-items:center}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;margin:28px 0;overflow:hidden}
 .fact{padding:14px 16px;border-right:1px solid var(--line)}
@@ -103,9 +104,9 @@ section[id]{scroll-margin-top:70px}
 .btn.solid{background:var(--ink);color:#fff}
 .map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px;overflow:hidden}
 .leaflet-container{font-family:"DM Sans",sans-serif}.leaflet-popup-content{font-size:13px;margin:10px 14px}.leaflet-popup-content b{display:block;font-size:14px}.leaflet-popup-content-wrapper{border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12)}.pin{width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:30px}
+.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:28px}
 .related{margin-top:48px}
-.related h2{font-size:24px;margin-bottom:16px}
+.related h2{font-size:28px;margin-bottom:16px}
 .hidden{display:none}
 @media (max-width:1024px){.hero h1{white-space:pre-line}
  .nav ul{display:none;position:absolute;top:60px;left:0;right:0;width:100%;grid-column:1/-1;justify-self:stretch;background:var(--bar);flex-direction:column;gap:0;padding:8px 0;text-align:left}
@@ -140,7 +141,7 @@ section[id]{scroll-margin-top:70px}
 .rank .btn{padding:9px 16px;font-size:13px}
 @media (max-width:760px){.rank{grid-template-columns:36px 1fr;gap:12px}.rank .num{font-size:28px}}
 
-footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:var(--mute);max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}.foot-links{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}.foot-links a{color:var(--mute)}.foot-icons{display:flex;gap:20px;justify-content:center}.foot-icons a{color:var(--mute);display:inline-flex;transition:color .15s}.foot-icons svg{width:22px;height:22px}</style>
+footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:var(--mute);max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}.foot-links{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}.foot-links a{color:var(--mute)}.foot-icons{display:flex;gap:20px;justify-content:center}.foot-icons a{color:var(--mute);display:inline-flex;transition:color .15s}.foot-icons svg{width:22px;height:22px}@media (max-width:400px){.brand{font-size:16px;letter-spacing:.4em;padding-left:.4em}}</style>
 </head>
 <body>
 
@@ -170,7 +171,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 <p class="meta">Jumeirah · AED 75pp · <span class="stars">★</span> 4.1 / 5</p>
 <div class="ph"><img src="/img/eleven-green.jpg" alt="Eleven Green burger, Dubai" loading="lazy"></div>
 <p class="blurb">The reigning heavyweight – Time Out crowned it Dubai's best burger for 2026, and the Double Trouble in its potato bun with the signature 11G sauce is the bite that did it. Sharp, savoury, properly built. The full DXB Food Diary review is live.</p>
-<div class="btns"><a class="btn solid" href="/reviews/eleven-green.html">Read the full review</a><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Eleven+Green+Dubai" target="_blank" rel="noopener">Google Maps</a></div>
+<div class="btns"><a class="btn solid" href="/eleven-green">Read the full review</a><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Eleven+Green+Dubai" target="_blank" rel="noopener">Google Maps</a></div>
 </div>
 </article>
 

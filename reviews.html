@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <title>All restaurant reviews in Dubai | DXB Food Diary</title>
-<meta name="robots" content="noindex"><!-- remove noindex once content is confirmed -->
 <meta name="description" content="Every restaurant and cafe reviewed by DXB Food Diary – honest, first-hand reviews across Dubai.">
-<link rel="canonical" href="https://dxbfooddiary.com/reviews.html">
+<link rel="canonical" href="https://dxbfooddiary.com/reviews">
 <meta property="og:title" content="All restaurant reviews in Dubai | DXB Food Diary">
 <meta property="og:description" content="Every restaurant and cafe reviewed by DXB Food Diary – honest, first-hand reviews across Dubai.">
 <meta property="og:image" content="https://dxbfooddiary.com/img/og-default.jpg">
@@ -29,7 +29,7 @@ header{position:sticky;top:0;background:var(--bar);color:var(--silver);z-index:1
 .burger{display:none;background:none;border:0;font-size:22px;line-height:1;cursor:pointer;color:var(--silver);grid-column:3;justify-self:end;padding:0}
 html{scroll-behavior:smooth}
 section[id]{scroll-margin-top:70px}
-.hero{padding:56px 0 40px;text-align:center}
+.hero{padding:48px 0 40px;text-align:center}
 .hero h1.typing::after{content:"|";margin-left:2px;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}.hero h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,56px);line-height:1.1;letter-spacing:-.02em;max-width:760px;margin:0 auto}
 .search{margin:28px auto 0;display:flex;max-width:520px;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
 .search input{flex:1;border:0;padding:14px 20px;font:inherit;font-size:15px;outline:none}
@@ -40,7 +40,7 @@ section[id]{scroll-margin-top:70px}
 .sec{padding:40px 0;border-top:1px solid var(--line)}
 .hero+.sec{border-top:0;padding-top:8px}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
-.sec-head h2{font-size:30px}
+.sec-head h2{font-size:28px}
 .sec-head a{font-size:13px;color:var(--mute);border-bottom:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px}
 .card .ph{aspect-ratio:4/3;background:var(--sand);border-radius:6px;overflow:hidden}
@@ -66,9 +66,9 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .foot-icons a:hover{color:var(--ink)}
 .foot-icons svg{width:22px;height:22px}
 /* review page */
-.rev{max-width:720px;margin:0 auto;padding:48px 20px}
+.rev{max-width:760px;margin:0 auto;padding:48px 20px}.rev p{font-size:17px;line-height:1.75}
 .crumb{font-size:13px;color:var(--mute)}
-.rev h1{font-size:clamp(36px,6vw,56px);line-height:1.05;margin-top:12px;letter-spacing:-.02em}
+.rev h1{font-size:clamp(34px,5.5vw,54px);line-height:1.08;margin-top:12px;letter-spacing:-.02em}
 .rev .sub{display:flex;gap:14px;flex-wrap:wrap;color:var(--mute);font-size:14px;margin-top:10px;align-items:center}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;margin:28px 0;overflow:hidden}
 .fact{padding:14px 16px;border-right:1px solid var(--line)}
@@ -92,9 +92,9 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .btn.solid{background:var(--ink);color:#fff}
 .map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px;overflow:hidden}
 .leaflet-container{font-family:"DM Sans",sans-serif}.leaflet-popup-content{font-size:13px;margin:10px 14px}.leaflet-popup-content b{display:block;font-size:14px}.leaflet-popup-content-wrapper{border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12)}.pin{width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:30px}
+.about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:28px}
 .related{margin-top:48px}
-.related h2{font-size:24px;margin-bottom:16px}
+.related h2{font-size:28px;margin-bottom:16px}
 .hidden{display:none}
 
 @media (max-width:1024px){.hero h1{white-space:pre-line}
@@ -130,7 +130,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .rank .btn{padding:9px 16px;font-size:13px}
 @media (max-width:760px){.rank{grid-template-columns:36px 1fr;gap:12px}.rank .num{font-size:28px}}
 
-</style>
+@media (max-width:400px){.brand{font-size:16px;letter-spacing:.4em;padding-left:.4em}}</style>
 </head>
 <body>
 <header><div class="wrap nav">
@@ -149,12 +149,12 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 </div>
 <section class="sec"><div class="wrap">
 <div class="grid">
-<a class="card" href="/reviews/slrp.html"><div class="ph"><img src="/img/slrp.jpg" alt="SLRP, Dubai Mall" loading="lazy"></div><h3>SLRP</h3><p class="meta">Dubai Mall · Ramen & sushi</p><p class="meta"><span class="stars">★</span> 4.5 <span style="color:var(--line)">/ 5</span> · AED 80pp</p></a>
-<a class="card" href="/reviews/orto.html"><div class="ph"><img src="/img/orto.jpg" alt="ORTO, Jumeirah" loading="lazy"></div><h3>ORTO</h3><p class="meta">Jumeirah · Brunch</p><p class="meta"><span class="stars">★</span> 4.2 <span style="color:var(--line)">/ 5</span> · AED 120pp</p></a>
-<a class="card" href="/reviews/heal.html"><div class="ph"><img src="/img/heal.jpg" alt="Heal, Jumeirah" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span> · AED 70pp</p></a>
-<a class="card" href="/reviews/eleven-green.html"><div class="ph"><img src="/img/eleven-green.jpg" alt="Eleven Green, Jumeirah" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span> · AED 75pp</p></a>
-<a class="card" href="/reviews/bkry.html"><div class="ph"><img src="/img/bkry.jpg" alt="BKRY, Alserkal Avenue" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span> · AED 60pp</p></a>
-<a class="card" href="/reviews/jungle-bowls.html"><div class="ph"><img src="/img/jungle-bowls.jpg" alt="Jungle Bowls, DIFC" loading="lazy"></div><h3>Jungle Bowls</h3><p class="meta">DIFC · Bowls & sushi</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span> · AED 90pp</p></a>
+<a class="card" href="/slrp"><div class="ph"><img src="/img/slrp.jpg" alt="SLRP, Dubai Mall" loading="lazy"></div><h3>SLRP</h3><p class="meta">Dubai Mall · Ramen & sushi</p><p class="meta"><span class="stars">★</span> 4.5 <span style="color:var(--line)">/ 5</span> · AED 80pp</p></a>
+<a class="card" href="/orto"><div class="ph"><img src="/img/orto.jpg" alt="ORTO, Jumeirah" loading="lazy"></div><h3>ORTO</h3><p class="meta">Jumeirah · Brunch</p><p class="meta"><span class="stars">★</span> 4.2 <span style="color:var(--line)">/ 5</span> · AED 120pp</p></a>
+<a class="card" href="/heal"><div class="ph"><img src="/img/heal.jpg" alt="Heal, Jumeirah" loading="lazy"></div><h3>Heal</h3><p class="meta">Jumeirah · Sourdough & coffee</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span> · AED 70pp</p></a>
+<a class="card" href="/eleven-green"><div class="ph"><img src="/img/eleven-green.jpg" alt="Eleven Green, Jumeirah" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span> · AED 75pp</p></a>
+<a class="card" href="/bkry"><div class="ph"><img src="/img/bkry.jpg" alt="BKRY, Alserkal Avenue" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span> · AED 60pp</p></a>
+<a class="card" href="/jungle-bowls"><div class="ph"><img src="/img/jungle-bowls.jpg" alt="Jungle Bowls, DIFC" loading="lazy"></div><h3>Jungle Bowls</h3><p class="meta">DIFC · Bowls & sushi</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span> · AED 90pp</p></a>
 </div>
 </div></section>
 </main>
