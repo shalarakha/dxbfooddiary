@@ -130,7 +130,7 @@ in Dubai</h1>
 
 <section class="sec" id="guides"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Guides</h2><a href="#">All guides</a></div>
-<div class="guides">
+<div class="guides" id="guideTiles">
 <a class="guide" href="guides/best-burgers.html" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
 <a class="guide" href="#" style="background-image:url(img/guide-tacos.jpg)"><h3 class="serif">Where to get proper tacos in Dubai</h3><span>Tacos</span></a>
 <a class="guide" href="#" style="background-image:url(img/guide-coffee.jpg)"><h3 class="serif">Coffee shops worth the drive</h3><span>Coffee</span></a>
@@ -144,7 +144,7 @@ in Dubai</h1>
 
 <section class="sec" id="areas"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Browse by area</h2><a href="#">View map</a></div>
-<div class="areas">
+<div class="areas" id="areaChips">
 <a class="area" href="#">Downtown<small>34</small></a><a class="area" href="#">Marina<small>28</small></a><a class="area" href="#">JLT<small>19</small></a><a class="area" href="areas/jumeirah.html">Jumeirah<small>3</small></a><a class="area" href="#">Business Bay<small>22</small></a><a class="area" href="#">Deira<small>14</small></a><a class="area" href="#">Bur Dubai<small>17</small></a><a class="area" href="#">Al Quoz<small>11</small></a><a class="area" href="#">DIFC<small>16</small></a><a class="area" href="#">Satwa<small>9</small></a>
 </div></div></section>
 
@@ -203,12 +203,32 @@ function renderAll(list){
 }
 renderAll(fallbackPlaces);
 if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
-  fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y&order=review_date.desc,created_at.desc",{headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}})
-  .then(r=>r.json())
-  .then(rows=>{
-    if(!Array.isArray(rows)||!rows.length)return;
-    renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"]));
-  }).catch(()=>{});
+  const hd={headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}};
+  Promise.all([
+    fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y&order=review_date.desc,created_at.desc",hd).then(r=>r.json()).catch(()=>[]),
+    fetch(DXB.SUPA_URL+"/rest/v1/collections?select=slug,type,title,tag,cover_url,page_url,area_match,sort_order&order=sort_order",hd).then(r=>r.json()).catch(()=>[])
+  ]).then(([rows,cols])=>{
+    cols=Array.isArray(cols)?cols:[];
+    if(Array.isArray(rows)&&rows.length){
+      renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"]));
+      const counts={};
+      rows.forEach(r=>{if(r.area)counts[r.area]=(counts[r.area]||0)+1});
+      const areaLink={};
+      cols.filter(c=>c.type==="area").forEach(c=>{areaLink[c.area_match||c.title]=c.page_url?c.page_url:("guide.html?slug="+c.slug)});
+      const names=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+      if(names.length){
+        document.getElementById("areaChips").innerHTML=names.map(a=>`<a class="area" href="${escH(areaLink[a]||"#")}">${escH(a)}<small>${counts[a]}</small></a>`).join("");
+      }
+    }
+    const guides=cols.filter(c=>c.type==="guide");
+    if(guides.length){
+      document.getElementById("guideTiles").innerHTML=guides.map(g=>{
+        const href=g.page_url?g.page_url:("guide.html?slug="+g.slug);
+        const bg=g.cover_url?(g.cover_url.indexOf("http")===0?g.cover_url:g.cover_url):"";
+        return `<a class="guide" href="${escH(href)}" ${bg?`style="background-image:url(${escH(bg)})"`:""}><h3 class="serif">${escH(g.title)}</h3>${g.tag?`<span>${escH(g.tag)}</span>`:""}</a>`;
+      }).join("");
+    }
+  });
 }
 function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}

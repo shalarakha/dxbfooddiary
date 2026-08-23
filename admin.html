@@ -74,6 +74,7 @@ textarea{min-height:120px;resize:vertical}
   <span class="brand">DXB Admin</span>
   <div class="tabs hidden" id="tabs">
     <button data-t="reviews" class="on" onclick="tab('reviews')">Reviews</button>
+    <button data-t="cols" onclick="tab('cols')">Guides</button>
     <button data-t="stats" onclick="tab('stats')">Analytics</button>
     <button data-t="account" onclick="tab('account')">Account</button>
   </div>
@@ -143,11 +144,50 @@ textarea{min-height:120px;resize:vertical}
       </div>
       <p class="inline-note">Drag the photo up or down to choose how it's framed on the site.</p>
     </div>
+    <label>More photos (gallery on the review page)</label>
+    <input type="file" id="fGallery" accept="image/*" multiple>
+    <div id="galList" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>
     <div class="switch"><input type="checkbox" id="fPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published (visible on the site)</label></div>
     <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn solid" id="saveBtn" onclick="saveReview()">Save</button>
       <button class="btn" onclick="closeEditor()">Cancel</button>
       <button class="btn danger hidden" id="delBtn" onclick="delReview()">Delete</button>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDES & AREAS -->
+<section id="cols" class="hidden">
+  <div class="topbar"><h1 class="serif" style="margin:0">Guides &amp; Areas</h1><button class="btn solid" onclick="newCol()">+ New</button></div>
+  <div class="msg" id="colMsg"></div>
+  <div id="colList"></div>
+
+  <div id="colEditor" class="card hidden">
+    <h2 class="serif" id="colEdTitle" style="margin-top:0">New guide</h2>
+    <div class="row">
+      <div><label>Type</label><select id="cType" onchange="colTypeUI()"><option value="guide">Guide (curated list)</option><option value="area">Area page</option></select></div>
+      <div><label>Title *</label><input type="text" id="cTitle" oninput="autoColSlug()"></div>
+    </div>
+    <div class="row">
+      <div><label>Slug *</label><input type="text" id="cSlug"></div>
+      <div id="cTagWrap"><label>Tag (small label on homepage tile)</label><input type="text" id="cTag" placeholder="Burgers"></div>
+    </div>
+    <div id="cAreaWrap" class="hidden"><label>Area name to match (must equal the Area on reviews)</label><input type="text" id="cAreaMatch" placeholder="JLT"></div>
+    <label>Intro paragraph(s)</label><textarea id="cIntro" placeholder="Separate paragraphs with a blank line."></textarea>
+    <label>Cover photo (homepage tile)</label>
+    <input type="file" id="cCover" accept="image/*">
+    <img id="cCoverPrev" class="hidden" style="width:220px;aspect-ratio:5/3;object-fit:cover;border-radius:8px;margin-top:8px;background:var(--sand)">
+    <div id="cItemsWrap">
+      <label style="margin-top:20px">Places in this guide (ranked order)</label>
+      <div id="cItems"></div>
+      <button class="btn small" style="margin-top:8px" onclick="colAddItem()">+ Add place</button>
+      <p class="inline-note">Pick one of your reviews, or leave "No review" and type the name for places you haven't reviewed yet.</p>
+    </div>
+    <div class="switch"><input type="checkbox" id="cPub" checked><label style="margin:0;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink)">Published</label></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn solid" id="colSaveBtn" onclick="saveCol()">Save</button>
+      <button class="btn" onclick="closeColEditor()">Cancel</button>
+      <button class="btn danger hidden" id="colDelBtn" onclick="delCol()">Delete</button>
     </div>
   </div>
 </section>
@@ -200,9 +240,10 @@ let editingId = null, photoBlob = null, focusX = 50, focusY = 50;
 
 function say(id, text, kind){ const el=document.getElementById(id); el.textContent=text; el.className='msg '+(kind||'ok'); if(kind!=='bad'){setTimeout(()=>{el.className='msg'},4000);} }
 function tab(t){
-  ['reviews','stats','account'].forEach(x=>{document.getElementById(x).classList.toggle('hidden',x!==t)});
+  ['reviews','cols','stats','account'].forEach(x=>{document.getElementById(x).classList.toggle('hidden',x!==t)});
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   if(t==='stats') loadStats(curDays);
+  if(t==='cols') loadCols();
 }
 
 /* ---------- auth ---------- */
@@ -260,6 +301,7 @@ async function loadReviews(){
     const img = r.image_url ? `<img src="${r.image_url.startsWith('http')?r.image_url:'/'+r.image_url}" alt="">` : '<img alt="">';
     d.innerHTML = `${img}<div class="gi"><h3>${esc(r.name)}</h3><p class="meta">${esc(r.area||'')} · <span class="stars">★</span> ${r.rating??'–'}</p></div>
       <span class="pill ${r.published?'live':''}">${r.published?'Live':'Draft'}</span>
+      <a class="btn small" href="/review.html?slug=${encodeURIComponent(r.slug)}&preview=1" target="_blank">Preview</a>
       <button class="btn small" data-id="${r.id}">Edit</button>`;
     d.querySelector('button').onclick = ()=>openEditor(r);
     el.appendChild(d);
@@ -280,6 +322,8 @@ function openEditor(r){
   document.getElementById('fPub').checked = r ? !!r.published : true;
   document.getElementById('fPhoto').value = '';
   focusX = r?.focus_x ?? 50; focusY = r?.focus_y ?? 50;
+  galItems = (r && Array.isArray(r.gallery)) ? r.gallery.map(u=>({url:u})) : [];
+  renderGallery();
   if(r?.image_url){ showPreview(r.image_url.startsWith('http')?r.image_url:'/'+r.image_url); }
   else document.getElementById('focusWrap').classList.add('hidden');
   document.getElementById('editor').classList.remove('hidden');
@@ -323,6 +367,8 @@ async function saveReview(){
       focus_x: Math.round(focusX), focus_y: Math.round(focusY)
     };
     if(image_url) rec.image_url = image_url;
+    for(const g of galItems){ if(g.blob && !g.url){ g.url = await uploadBlob(g.blob, val('fSlug')+'-g'); } }
+    rec.gallery = galItems.map(g=>g.url).filter(Boolean);
     let error;
     if(editingId){ ({ error } = await sb.from('reviews').update(rec).eq('id', editingId)); }
     else { ({ error } = await sb.from('reviews').insert(rec)); }
@@ -361,6 +407,170 @@ function applyFocus(){ document.getElementById('photoPrev').style.objectPosition
   });
   ['pointerup','pointercancel'].forEach(ev=>frame.addEventListener(ev, ()=>{ dragging=false; frame.style.cursor='grab'; }));
 })();
+
+/* ---------- gallery ---------- */
+let galItems = [];
+function renderGallery(){
+  const el = document.getElementById('galList'); el.innerHTML='';
+  galItems.forEach((g,i)=>{
+    const d = document.createElement('div');
+    d.style.cssText='position:relative;width:110px';
+    d.innerHTML = `<img src="${g.preview||g.url}" style="width:110px;height:82px;object-fit:cover;border-radius:8px;background:var(--sand)">
+      <div style="display:flex;gap:4px;margin-top:4px;justify-content:center">
+        <button class="btn small" style="padding:2px 8px" onclick="galMove(${i},-1)">\u25b2</button>
+        <button class="btn small" style="padding:2px 8px" onclick="galMove(${i},1)">\u25bc</button>
+        <button class="btn small danger" style="padding:2px 8px" onclick="galRemove(${i})">\u2715</button>
+      </div>`;
+    el.appendChild(d);
+  });
+}
+function galMove(i,dir){ const j=i+dir; if(j<0||j>=galItems.length)return; [galItems[i],galItems[j]]=[galItems[j],galItems[i]]; renderGallery(); }
+function galRemove(i){ galItems.splice(i,1); renderGallery(); }
+function cropToBlob(file, w, h){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const target=w/h;
+      let sw=img.width, sh=img.height;
+      if(sw/sh>target){ sw=sh*target; } else { sh=sw/target; }
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,0,0,w,h);
+      c.toBlob(b=>b?res(b):rej(new Error('crop failed')),'image/jpeg',.85);
+    };
+    img.onerror=rej;
+    img.src=URL.createObjectURL(file);
+  });
+}
+document.getElementById('fGallery').addEventListener('change', async function(){
+  for(const f of this.files){
+    const b = await cropToBlob(f,1200,900);
+    galItems.push({ blob:b, preview:URL.createObjectURL(b) });
+  }
+  this.value=''; renderGallery();
+});
+async function uploadBlob(blob, prefix){
+  const path = prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2,7) + '.jpg';
+  const { error } = await sb.storage.from('photos').upload(path, blob, { contentType:'image/jpeg' });
+  if(error) throw error;
+  return sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+}
+
+/* ---------- collections ---------- */
+let editingColId = null, colCoverBlob = null, colItems = [], allReviews = [];
+function colTypeUI(){
+  const isArea = document.getElementById('cType').value==='area';
+  document.getElementById('cAreaWrap').classList.toggle('hidden', !isArea);
+  document.getElementById('cItemsWrap').classList.toggle('hidden', isArea);
+  document.getElementById('cTagWrap').classList.toggle('hidden', isArea);
+}
+async function loadCols(){
+  const [{ data: cols, error }, { data: revs }] = await Promise.all([
+    sb.from('collections').select('*').order('type').order('sort_order'),
+    sb.from('reviews').select('slug,name').order('name')
+  ]);
+  allReviews = revs||[];
+  if(error) return say('colMsg', error.message, 'bad');
+  const el = document.getElementById('colList'); el.innerHTML='';
+  (cols||[]).forEach(c=>{
+    const d = document.createElement('div'); d.className='list-item';
+    const img = c.cover_url?`<img src="${c.cover_url.startsWith('http')?c.cover_url:'/'+c.cover_url}" alt="">`:'<img alt="">';
+    d.innerHTML = `${img}<div class="gi"><h3>${esc(c.title)}</h3><p class="meta">${c.type==='area'?'Area page':'Guide'}</p></div>
+      <span class="pill ${c.published?'live':''}">${c.published?'Live':'Draft'}</span>
+      <a class="btn small" href="/guide.html?slug=${encodeURIComponent(c.slug)}" target="_blank">View</a>
+      <button class="btn small">Edit</button>`;
+    d.querySelector('button').onclick = ()=>openColEditor(c);
+    el.appendChild(d);
+  });
+}
+function newCol(){ openColEditor(null); }
+function autoColSlug(){ if(editingColId) return; document.getElementById('cSlug').value = document.getElementById('cTitle').value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function openColEditor(c){
+  editingColId = c ? c.id : null; colCoverBlob = null;
+  colItems = c && Array.isArray(c.items) ? JSON.parse(JSON.stringify(c.items)) : [];
+  document.getElementById('colEdTitle').textContent = c ? 'Edit: '+c.title : 'New guide';
+  document.getElementById('colDelBtn').classList.toggle('hidden', !c);
+  document.getElementById('cType').value = c?.type || 'guide';
+  document.getElementById('cTitle').value = c?.title || '';
+  document.getElementById('cSlug').value = c?.slug || '';
+  document.getElementById('cTag').value = c?.tag || '';
+  document.getElementById('cAreaMatch').value = c?.area_match || '';
+  document.getElementById('cIntro').value = c?.intro || '';
+  document.getElementById('cPub').checked = c ? !!c.published : true;
+  document.getElementById('cCover').value='';
+  const pv = document.getElementById('cCoverPrev');
+  if(c?.cover_url){ pv.src = c.cover_url.startsWith('http')?c.cover_url:'/'+c.cover_url; pv.classList.remove('hidden'); } else pv.classList.add('hidden');
+  colTypeUI(); renderColItems();
+  document.getElementById('colEditor').classList.remove('hidden');
+  document.getElementById('colEditor').scrollIntoView({behavior:'smooth'});
+}
+function closeColEditor(){ document.getElementById('colEditor').classList.add('hidden'); editingColId=null; }
+function readColItems(){
+  document.querySelectorAll('#cItems .citem').forEach((row,i)=>{
+    colItems[i] = {
+      review_slug: row.querySelector('.ci-rev').value || null,
+      name: row.querySelector('.ci-name').value.trim() || null,
+      meta: row.querySelector('.ci-meta').value.trim() || null,
+      blurb: row.querySelector('.ci-blurb').value.trim() || null,
+      gmaps: row.querySelector('.ci-gmaps').value.trim() || null
+    };
+  });
+}
+function renderColItems(){
+  const el = document.getElementById('cItems'); el.innerHTML='';
+  colItems.forEach((it,i)=>{
+    const d = document.createElement('div');
+    d.className='citem card'; d.style.marginBottom='10px';
+    const opts = '<option value="">No review \u2013 manual entry</option>' + allReviews.map(r=>`<option value="${r.slug}" ${it.review_slug===r.slug?'selected':''}>${esc(r.name)}</option>`).join('');
+    d.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center"><b>#${i+1}</b>
+        <span><button class="btn small" onclick="colMoveItem(${i},-1)">\u25b2</button>
+        <button class="btn small" onclick="colMoveItem(${i},1)">\u25bc</button>
+        <button class="btn small danger" onclick="colRemoveItem(${i})">\u2715</button></span></div>
+      <label>Link to one of your reviews</label><select class="ci-rev">${opts}</select>
+      <label>Name (if no review linked)</label><input type="text" class="ci-name" value="${esc(it.name||'')}">
+      <label>Meta line</label><input type="text" class="ci-meta" placeholder="Al Manara \u00b7 AED 60pp" value="${esc(it.meta||'')}">
+      <label>Blurb</label><textarea class="ci-blurb" style="min-height:70px">${esc(it.blurb||'')}</textarea>
+      <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">`;
+    el.appendChild(d);
+  });
+}
+function colAddItem(){ readColItems(); colItems.push({}); renderColItems(); }
+function colMoveItem(i,dir){ readColItems(); const j=i+dir; if(j<0||j>=colItems.length)return; [colItems[i],colItems[j]]=[colItems[j],colItems[i]]; renderColItems(); }
+function colRemoveItem(i){ readColItems(); colItems.splice(i,1); renderColItems(); }
+document.getElementById('cCover').addEventListener('change', async function(){
+  const f=this.files[0]; if(!f) return;
+  colCoverBlob = await cropToBlob(f,1200,720);
+  const pv=document.getElementById('cCoverPrev'); pv.src=URL.createObjectURL(colCoverBlob); pv.classList.remove('hidden');
+});
+async function saveCol(){
+  const btn=document.getElementById('colSaveBtn'); btn.disabled=true;
+  try{
+    const title=document.getElementById('cTitle').value.trim(), slug=document.getElementById('cSlug').value.trim();
+    const type=document.getElementById('cType').value;
+    if(!title||!slug){ say('colMsg','Title and slug are required.','bad'); return; }
+    readColItems();
+    const rec={ title, slug, type,
+      tag: document.getElementById('cTag').value.trim()||null,
+      area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
+      intro: document.getElementById('cIntro').value.trim()||null,
+      items: type==='guide'?colItems.filter(i=>i.review_slug||i.name):[],
+      published: document.getElementById('cPub').checked };
+    if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);
+    let error;
+    if(editingColId){ ({error}=await sb.from('collections').update(rec).eq('id',editingColId)); }
+    else{ ({error}=await sb.from('collections').insert(rec)); }
+    if(error) throw error;
+    say('colMsg','Saved.','ok'); closeColEditor(); loadCols();
+  }catch(e){ say('colMsg', e.message||String(e), 'bad'); }
+  finally{ btn.disabled=false; }
+}
+async function delCol(){
+  if(!editingColId) return;
+  if(!confirm('Delete this page? This can\u2019t be undone.')) return;
+  const { error } = await sb.from('collections').delete().eq('id',editingColId);
+  if(error) return say('colMsg', error.message, 'bad');
+  say('colMsg','Deleted.','ok'); closeColEditor(); loadCols();
+}
 
 /* ---------- analytics ---------- */
 let curDays = 30;
