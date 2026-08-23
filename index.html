@@ -6,6 +6,7 @@
 <title>DXB Food Diary – Best food in Dubai</title>
 <meta name="description" content="Honest restaurant reviews, area guides and a map of the best places to eat in Dubai.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#1a1a1a;--mute:#6b6b66;--line:#e6e4de;--sand:#f5f3ee;--star:#d6a53c;--maxw:1100px}
@@ -76,7 +77,8 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 .btns{display:flex;gap:10px;flex-wrap:wrap}
 .btn{padding:12px 20px;border:1px solid var(--ink);border-radius:999px;font-size:14px}
 .btn.solid{background:var(--ink);color:#fff}
-.map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px}
+.map{background:var(--sand);border-radius:8px;height:220px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:14px;margin-top:28px;overflow:hidden}
+.leaflet-container{font-family:Inter,sans-serif}.leaflet-popup-content{font-size:13px;margin:10px 14px}.leaflet-popup-content b{display:block;font-size:14px}.leaflet-popup-content-wrapper{border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12)}.pin{width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .about{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center}.about-ph{width:160px;height:160px;border-radius:50%;background:var(--sand)}.about h2{font-size:30px}
 .related{margin-top:48px}
 .related h2{font-size:24px;margin-bottom:16px}
@@ -138,7 +140,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 
 <section class="sec"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Every review on one map</h2><a href="#">Open full map</a></div>
-<a href="#" class="map" style="margin-top:0;height:260px;position:relative;overflow:hidden"><span>Map coming soon</span></a>
+<div id="map" class="map" style="margin-top:0;height:340px;z-index:0"></div>
 </div></section>
 
 <section class="sec"><div class="wrap about" style="grid-template-columns:1fr">
@@ -176,7 +178,14 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 
 <footer class="wrap"><span>© 2026 DXB Food Diary</span><span>Reviews · Guides · Areas · Map · About</span><span><a href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener">Instagram</a> · <a href="https://tiktok.com/@halalfooddiary" target="_blank" rel="noopener">TikTok</a> · Work with me</span></footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const places=[["BKRY","Alserkal Avenue",4.0,25.14265,55.22455],["Heal","Jumeirah",4.1,25.15877,55.20925],["ORTO","Jumeirah",4.2,25.19501,55.23580],["Jungle Bowls","DIFC",4.0,25.20774,55.27827],["SLRP","Dubai Mall",4.5,25.19586,55.27998],["Eleven Green","Jumeirah",4.1,25.14461,55.19861]];
+const map=L.map("map",{scrollWheelZoom:false,zoomControl:true}).setView([25.18,55.24],11);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{attribution:"&copy; OpenStreetMap &copy; CARTO",maxZoom:19}).addTo(map);
+const icon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
+const b=[];places.forEach(p=>{L.marker([p[3],p[4]],{icon}).addTo(map).bindPopup(`<b>${p[0]}</b>${p[1]} · ★ ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
+map.fitBounds(b,{padding:[30,30]});
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
 </script>
 </body>
