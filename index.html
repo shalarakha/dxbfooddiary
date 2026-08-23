@@ -21,7 +21,9 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff
 .brand{font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
 .nav ul{display:flex;gap:24px;list-style:none;font-size:14px;color:var(--mute)}
 .nav ul a:hover{color:var(--ink)}
-.burger{display:none;background:none;border:0;font-size:22px;cursor:pointer}
+.burger{display:none;background:none;border:0;font-size:22px;cursor:pointer;color:var(--ink)}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:70px}
 .hero{padding:72px 0 48px}
 .hero h1{font-size:clamp(40px,7vw,76px);line-height:1;letter-spacing:-.02em}
 .hero p{color:var(--mute);margin-top:14px;font-size:17px;max-width:460px}
@@ -84,7 +86,10 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 .related h2{font-size:24px;margin-bottom:16px}
 .hidden{display:none}
 @media (max-width:760px){
- .nav ul{display:none}.burger{display:block}
+ .nav ul{display:none;position:absolute;top:60px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);flex-direction:column;gap:0;padding:8px 0}
+ .nav ul.open{display:flex}
+ .nav ul li a{display:block;padding:14px 20px;font-size:16px;color:var(--ink)}
+ .burger{display:block}
  .grid{grid-template-columns:repeat(2,1fr);gap:20px 14px}
  .guides{grid-template-columns:1fr}
  .facts{grid-template-columns:repeat(2,1fr)}
@@ -99,8 +104,8 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 
 <header><div class="wrap nav">
 <a class="brand" href="#" onclick="show('home')">DXB Food Diary</a>
-<ul><li><a href="#">Reviews</a></li><li><a href="#">Guides</a></li><li><a href="#">Areas</a></li><li><a href="#">Map</a></li><li><a href="#">About</a></li></ul>
-<button class="burger" aria-label="Menu">☰</button>
+<ul id="menu"><li><a href="#reviews" onclick="closeMenu()">Reviews</a></li><li><a href="#guides" onclick="closeMenu()">Guides</a></li><li><a href="#areas" onclick="closeMenu()">Areas</a></li><li><a href="#mapsec" onclick="closeMenu()">Map</a></li><li><a href="#about" onclick="closeMenu()">About</a></li></ul>
+<button class="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()">☰</button>
 </div></header>
 
 <!-- HOME -->
@@ -112,7 +117,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <div class="chips"><a class="chip" href="#">Brunch</a><a class="chip" href="#">Date night</a><a class="chip" href="#">Under AED 50</a><a class="chip" href="#">Japanese</a><a class="chip" href="#">Marina</a><a class="chip" href="#">Downtown</a><a class="chip" href="#">Late night</a></div>
 </section>
 
-<section class="sec"><div class="wrap">
+<section class="sec" id="reviews"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Latest reviews</h2><a href="#">All reviews</a></div>
 <div class="grid">
 <a class="card" href="#"><div class="ph"><img src="img/bkry.jpg" alt="BKRY" loading="lazy"></div><h3>BKRY</h3><p class="meta">Alserkal Avenue · Bakery & coffee</p><p class="meta"><span class="stars">★</span> 4.0 <span style="color:var(--line)">/ 5</span></p></a>
@@ -123,7 +128,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <a class="card" href="#"><div class="ph"><img src="img/eleven-green.jpg" alt="Eleven Green" loading="lazy"></div><h3>Eleven Green</h3><p class="meta">Jumeirah · Burgers</p><p class="meta"><span class="stars">★</span> 4.1 <span style="color:var(--line)">/ 5</span></p></a>
 </div></div></div></section>
 
-<section class="sec"><div class="wrap">
+<section class="sec" id="guides"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Guides</h2><a href="#">All guides</a></div>
 <div class="guides">
 <a class="guide" href="#" style="background-image:url(img/guide-burgers.jpg)"><h3 class="serif">Dubai's best burgers, ranked</h3><span>Burgers</span></a>
@@ -132,18 +137,18 @@ footer{border-top:1px solid var(--line);padding:40px 0;font-size:13px;color:var(
 <a class="guide" href="#" style="background-image:url(img/guide-desserts.jpg)"><h3 class="serif">The best desserts in Dubai right now</h3><span>Desserts</span></a>
 </div></div></div></section>
 
-<section class="sec"><div class="wrap">
+<section class="sec" id="areas"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Browse by area</h2><a href="#">View map</a></div>
 <div class="areas">
 <a class="area" href="#">Downtown<small>34</small></a><a class="area" href="#">Marina<small>28</small></a><a class="area" href="#">JLT<small>19</small></a><a class="area" href="#">Jumeirah<small>31</small></a><a class="area" href="#">Business Bay<small>22</small></a><a class="area" href="#">Deira<small>14</small></a><a class="area" href="#">Bur Dubai<small>17</small></a><a class="area" href="#">Al Quoz<small>11</small></a><a class="area" href="#">DIFC<small>16</small></a><a class="area" href="#">Satwa<small>9</small></a>
 </div></div></section>
 
-<section class="sec"><div class="wrap">
+<section class="sec" id="mapsec"><div class="wrap">
 <div class="sec-head"><h2 class="serif">Every review on one map</h2><a href="#">Open full map</a></div>
 <div id="map" class="map" style="margin-top:0;height:340px;z-index:0"></div>
 </div></section>
 
-<section class="sec"><div class="wrap about" style="grid-template-columns:1fr">
+<section class="sec" id="about"><div class="wrap about" style="grid-template-columns:1fr">
 <div><h2 class="serif">Who's behind this?</h2><p class="meta" style="font-size:15px;margin-top:8px;max-width:520px">Halal Food Diary started in London and moved to Dubai. Every place here is one I've paid for and eaten at, usually more than once. No PR invites, no paid posts.</p><div class="btns" style="margin-top:16px"><a class="btn" href="https://instagram.com/halalfooddiary" target="_blank" rel="noopener">@halalfooddiary on Instagram</a><a class="btn" href="https://tiktok.com/@halalfooddiary" target="_blank" rel="noopener">TikTok</a></div></div>
 </div></section>
 </main>
@@ -186,6 +191,8 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{at
 const icon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
 const b=[];places.forEach(p=>{L.marker([p[3],p[4]],{icon}).addTo(map).bindPopup(`<b>${p[0]}</b>${p[1]} · ★ ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
 map.fitBounds(b,{padding:[30,30]});
+function toggleMenu(){const m=document.getElementById("menu");const o=m.classList.toggle("open");document.querySelector(".burger").setAttribute("aria-expanded",o)}
+function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function show(id){document.querySelectorAll('main').forEach(m=>m.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);return false}
 </script>
 </body>
