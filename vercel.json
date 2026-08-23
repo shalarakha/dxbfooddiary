@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/reviews/bkry.html", "destination": "/bkry", "permanent": true },
+    { "source": "/reviews/heal.html", "destination": "/heal", "permanent": true },
+    { "source": "/reviews/orto.html", "destination": "/orto", "permanent": true },
+    { "source": "/reviews/jungle-bowls.html", "destination": "/jungle-bowls", "permanent": true },
+    { "source": "/reviews/slrp.html", "destination": "/slrp", "permanent": true },
+    { "source": "/reviews/eleven-green.html", "destination": "/eleven-green", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/g/:slug", "destination": "/guide.html?slug=:slug" },
+    { "source": "/((?!api/|js/|img/|assets/|reviews/|areas/|guides/|admin|guide$|review$|index|map$|reviews$|guides$|areas$|about$|favicon|robots|sitemap|.*\\.).*)", "destination": "/review.html?slug=$1" }
+  ]
+}
