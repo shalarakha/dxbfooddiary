@@ -167,24 +167,43 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{at
 const pinIcon=L.divIcon({className:"",html:'<div class="pin"></div>',iconSize:[14,14],iconAnchor:[7,7]});
 let markerLayer=L.layerGroup().addTo(map);
 function escH(t){return (t||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function renderAll(list){
+function renderGrid(list){
   const g=document.getElementById("revGrid");
   if(list.length){g.innerHTML=list.map(p=>`<a class="card" href="${escH(p[5])}"><div class="ph">${p[6]?`<img src="${escH(p[6])}" alt="${escH(p[0])}" loading="lazy" style="object-position:${p[8]||"50% 50%"}">`:""}</div><h3>${escH(p[0])}</h3><p class="meta">${escH(p[7]||p[1])}</p><p class="meta"><span class="stars">\u2605</span> ${p[2].toFixed(1)} <span style="color:var(--line)">/ 5</span></p></a>`).join("")}
+}
+function renderMap(list){
   markerLayer.clearLayers();
   const b=[];
   list.forEach(p=>{if(p[3]==null||p[4]==null)return;L.marker([p[3],p[4]],{icon:pinIcon}).addTo(markerLayer).bindPopup(`<b><a href="${escH(p[5])}" style="border-bottom:1px solid var(--line)">${escH(p[0])}</a></b>${escH(p[1])} \u00b7 \u2605 ${p[2].toFixed(1)} / 5`);b.push([p[3],p[4]])});
   if(b.length)map.fitBounds(b,{padding:[30,30]});
 }
+function renderAll(list){ renderGrid(list); renderMap(list); }
+function pickHomepage(list,slots){
+  // featured first, ordered by homepage_order (nulls last), then newest fills remaining slots
+  const feat=list.filter(x=>x.featured).sort((a,b)=>{
+    const ao=a.homepage_order==null?9999:a.homepage_order, bo=b.homepage_order==null?9999:b.homepage_order;
+    return ao-bo;
+  });
+  const rest=list.filter(x=>!x.featured);
+  const featIds=new Set(feat);
+  const out=feat.slice(0,slots);
+  for(const x of rest){ if(out.length>=slots) break; out.push(x); }
+  return out;
+}
 renderAll(fallbackPlaces);
 if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
   const hd={headers:{apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY}};
   Promise.all([
-    fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y&order=review_date.desc,created_at.desc",hd).then(r=>r.json()).catch(()=>[]),
-    fetch(DXB.SUPA_URL+"/rest/v1/collections?select=slug,type,title,tag,cover_url,page_url,area_match,sort_order&order=sort_order",hd).then(r=>r.json()).catch(()=>[])
+    fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&select=name,area,rating,lat,lng,slug,page_url,image_url,blurb,focus_x,focus_y,featured,homepage_order&order=review_date.desc,created_at.desc",hd).then(r=>r.json()).catch(()=>[]),
+    fetch(DXB.SUPA_URL+"/rest/v1/collections?select=slug,type,title,tag,cover_url,page_url,area_match,sort_order,featured,homepage_order&order=sort_order",hd).then(r=>r.json()).catch(()=>[])
   ]).then(([rows,cols])=>{
     cols=Array.isArray(cols)?cols:[];
     if(Array.isArray(rows)&&rows.length){
-      renderAll(rows.map(r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"]));
+      const toTuple=r=>[r.name,r.area||"",+r.rating||0,r.lat,r.lng,r.page_url?r.page_url:("review.html?slug="+r.slug),r.image_url?(r.image_url.indexOf("http")===0?r.image_url:r.image_url):"", r.blurb||"", (r.focus_x??50)+"% "+(r.focus_y??50)+"%"];
+      const gridRows=pickHomepage(rows,6).map(toTuple);
+      const allRows=rows.map(toTuple);
+      renderGrid(gridRows);
+      renderMap(allRows);
       const counts={};
       rows.forEach(r=>{if(r.area)counts[r.area]=(counts[r.area]||0)+1});
       const areaLink={};
@@ -194,7 +213,7 @@ if(window.DXB&&DXB.SUPA_KEY.indexOf("__")!==0){
         document.getElementById("areaChips").innerHTML=names.map(a=>`<a class="area" href="${escH(areaLink[a]||"#")}">${escH(a)}<small>${counts[a]}</small></a>`).join("");
       }
     }
-    const guides=cols.filter(c=>c.type==="guide");
+    const guides=pickHomepage(cols.filter(c=>c.type==="guide"),4);
     if(guides.length){
       document.getElementById("guideTiles").innerHTML=guides.map(g=>{
         const href=g.page_url?g.page_url:("guide.html?slug="+g.slug);
