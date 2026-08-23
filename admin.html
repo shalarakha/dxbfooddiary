@@ -128,7 +128,15 @@ textarea{min-height:120px;resize:vertical}
     </div>
     <p class="inline-note">Tip: in Google Maps, long-press the restaurant → the two numbers that appear are lat, lng.</p>
     <label>Card line (shows under the name on the homepage)</label><input type="text" id="fBlurb" placeholder="JLT · Burgers">
-    <label>Review text</label><textarea id="fBody" placeholder="Write paragraphs separated by a blank line.&#10;&#10;Start a line with ## for a section heading, e.g.&#10;## The room"></textarea>
+    <label>Review text</label><textarea id="fBody" placeholder="Write paragraphs separated by a blank line.&#10;&#10;Start a line with ## for a section heading, e.g.&#10;## The room&#10;&#10;Put [photo 2] on its own line to drop gallery photo 2 in here."></textarea>
+    <div class="inline-note" style="background:var(--sand);border-radius:8px;padding:10px 12px;margin-top:8px;line-height:1.6">
+      <b style="color:var(--ink)">Formatting cheat-sheet</b><br>
+      • Blank line between paragraphs<br>
+      • <b>## Heading</b> at the start of a line = section heading<br>
+      • <b>[photo 2]</b> on its own line = places gallery photo 2 (the number shown under each photo below) full-width at that point, and removes it from the top gallery<br>
+      • Photo sizes (set under each gallery photo): <b>Wide</b> = full width · <b>Standard</b> 4:3, <b>Square</b>, <b>Tall</b> portrait = two-across<br>
+      • Main photo is always shown first and wide; the "What to order" box goes at the end automatically
+    </div>
     <label>What to order (one item per line)</label><textarea id="fOrder" style="min-height:80px" placeholder="Signature burger – the one to get&#10;Fries&#10;Skip the milkshake"></textarea>
     <label>Verdict (one line)</label><input type="text" id="fVerdict" placeholder="Worth the trip from anywhere in Dubai.">
     <div class="row">
