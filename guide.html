@@ -162,9 +162,14 @@ function toggleMenu(){var m=document.getElementById("menu");var o=m.classList.to
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function imgUrl(u){return u?(u.indexOf("http")===0?u:"/"+u):""}
-function revHref(r){return r.page_url?"/"+r.page_url:"/review.html?slug="+r.slug}
+function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
 (function(){
   var slug=new URLSearchParams(location.search).get("slug");
+  if(!slug){
+    var seg=location.pathname.replace(/^\/+|\/+$/g,"").split("/");
+    var last=seg[seg.length-1]||"";
+    if(last&&last.indexOf(".")===-1&&last!=="g"){slug=decodeURIComponent(last)}
+  }
   if(!slug){document.getElementById("notfound").style.display="block";return}
   var h={apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY};
   fetch(DXB.SUPA_URL+"/rest/v1/collections?slug=eq."+encodeURIComponent(slug)+"&published=eq.true&select=*",{headers:h})
@@ -178,7 +183,16 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/review.html?slug="+r.slug
     document.getElementById("crumb").innerHTML='<a href="/">Home</a> \u203a <a href="/#'+(isArea?"areas":"guides")+'">'+(isArea?"Areas":"Guides")+"</a> \u203a "+esc(c.tag||c.title);
     document.getElementById("cTitle").textContent=isArea?("Where to eat in "+c.title):c.title;
     if(c.intro){var el=document.getElementById("cIntro");el.style.display="block";el.innerHTML=c.intro.split(/\n\s*\n/).map(function(p){return "<p>"+esc(p.trim())+"</p>"}).join("")}
-    var updated=new Date(c.updated_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    var modRaw=c.date_modified||c.updated_at;
+    var pubRaw=c.date_published||c.created_at;
+    var updated=new Date((typeof modRaw==="string"&&modRaw.length===10)?modRaw+"T00:00:00":modRaw).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    (function(){
+      var canonical=location.origin+"/g/"+encodeURIComponent(slug);
+      var lc=document.querySelector('link[rel=canonical]'); if(!lc){lc=document.createElement("link");lc.rel="canonical";document.head.appendChild(lc)} lc.href=canonical;
+      var toISO=function(d){return (typeof d==="string"&&d.length===10)?d:new Date(d).toISOString().slice(0,10)};
+      var ld={"@context":"https://schema.org","@type":isArea?"CollectionPage":"ItemList","name":document.title.replace(" | DXB Food Diary",""),"datePublished":toISO(pubRaw),"dateModified":toISO(modRaw),"url":canonical};
+      var sc=document.createElement("script");sc.type="application/ld+json";sc.textContent=JSON.stringify(ld);document.head.appendChild(sc);
+    })();
     if(isArea){
       fetch(DXB.SUPA_URL+"/rest/v1/reviews?published=eq.true&area=eq."+encodeURIComponent(c.area_match||c.title)+"&select=*&order=rating.desc",{headers:h})
       .then(function(x){return x.json()})
