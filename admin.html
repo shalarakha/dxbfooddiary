@@ -545,12 +545,16 @@ function openColEditor(c){
 function closeColEditor(){ document.getElementById('colEditor').classList.add('hidden'); editingColId=null; }
 function readColItems(){
   document.querySelectorAll('#cItems .citem').forEach((row,i)=>{
+    const prev = colItems[i] || {};
     colItems[i] = {
       review_slug: row.querySelector('.ci-rev').value || null,
       name: row.querySelector('.ci-name').value.trim() || null,
       meta: row.querySelector('.ci-meta').value.trim() || null,
       blurb: row.querySelector('.ci-blurb').value.trim() || null,
-      gmaps: row.querySelector('.ci-gmaps').value.trim() || null
+      gmaps: row.querySelector('.ci-gmaps').value.trim() || null,
+      image: prev.image || null,
+      _blob: prev._blob || null,
+      _preview: prev._preview || null
     };
   });
 }
@@ -569,10 +573,24 @@ function renderColItems(){
       <label>Name (if no review linked)</label><input type="text" class="ci-name" value="${esc(it.name||'')}">
       <label>Meta line</label><input type="text" class="ci-meta" placeholder="Al Manara \u00b7 AED 60pp" value="${esc(it.meta||'')}">
       <label>Blurb</label><textarea class="ci-blurb" style="min-height:70px">${esc(it.blurb||'')}</textarea>
-      <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">`;
+      <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">
+      <label>Photo (shown on the guide page)</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        ${(it._preview||it.image)?`<img src="${it._preview||(it.image.startsWith('http')?it.image:'/'+it.image)}" style="width:128px;height:72px;object-fit:cover;border-radius:6px;border:1px solid var(--line)" alt="">`:''}
+        <input type="file" class="ci-photo" accept="image/*" style="max-width:220px">
+        ${(it._preview||it.image)?`<button class="btn small danger" type="button" onclick="colClearPhoto(${i})">Remove photo</button>`:''}
+      </div>`;
     el.appendChild(d);
+    d.querySelector('.ci-photo').addEventListener('change', async function(){
+      const f=this.files[0]; if(!f) return;
+      readColItems();
+      const b=await cropToBlob(f,1600,900);
+      colItems[i]._blob=b; colItems[i]._preview=URL.createObjectURL(b);
+      renderColItems();
+    });
   });
 }
+function colClearPhoto(i){ readColItems(); colItems[i].image=null; colItems[i]._blob=null; colItems[i]._preview=null; renderColItems(); }
 function colAddItem(){ readColItems(); colItems.push({}); renderColItems(); }
 function colMoveItem(i,dir){ readColItems(); const j=i+dir; if(j<0||j>=colItems.length)return; [colItems[i],colItems[j]]=[colItems[j],colItems[i]]; renderColItems(); }
 function colRemoveItem(i){ readColItems(); colItems.splice(i,1); renderColItems(); }
@@ -588,11 +606,12 @@ async function saveCol(){
     const type=document.getElementById('cType').value;
     if(!title||!slug){ say('colMsg','Title and slug are required.','bad'); return; }
     readColItems();
+    for(const it of colItems){ if(it._blob){ it.image = await uploadBlob(it._blob, 'gitem-'+slug); it._blob=null; it._preview=null; } }
     const rec={ title, slug, type,
       tag: document.getElementById('cTag').value.trim()||null,
       area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
       intro: document.getElementById('cIntro').value.trim()||null,
-      items: type==='guide'?colItems.filter(i=>i.review_slug||i.name):[],
+      items: type==='guide'?colItems.filter(i=>i.review_slug||i.name).map(i=>({review_slug:i.review_slug,name:i.name,meta:i.meta,blurb:i.blurb,gmaps:i.gmaps,image:i.image||null})):[],
       published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null, date_published: val('cDatePub')||null, date_modified: val('cDateMod')||new Date().toISOString().slice(0,10) };
     if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);
     let error;

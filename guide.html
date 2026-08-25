@@ -245,7 +245,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           var r=it.review_slug?bySlug[it.review_slug]:null;
           var name=r?r.name:(it.name||"");
           var meta=r?[r.area,r.price].filter(Boolean).join(" \u00b7 ")+(r.rating?" \u00b7 <span class=\"stars\">\u2605</span> "+(+r.rating).toFixed(1)+" / 5":""):esc(it.meta||"");
-          var img=r?imgUrl(r.image_url):(it.image?imgUrl(it.image):"");
+          var img=it.image?imgUrl(it.image):(r?imgUrl(r.image_url):"");
           var btns="";
           if(r)btns+='<a class="btn solid" href="'+revHref(r)+'">Read the full review</a>';
           var gm=it.gmaps||(r?r.gmaps_url:"");
