@@ -357,16 +357,12 @@ function openEditor(r){
 }
 function closeEditor(){ document.getElementById('editor').classList.add('hidden'); editingId=null; }
 
-document.getElementById('fPhoto').addEventListener('change', function(){
+document.getElementById('fPhoto').addEventListener('change', async function(){
   const f = this.files[0]; if(!f) return;
-  const img = new Image();
-  img.onload = function(){
-    const s = Math.min(img.width, img.height);
-    const c = document.createElement('canvas'); c.width = 900; c.height = 900;
-    c.getContext('2d').drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, 900, 900);
-    c.toBlob(b=>{ photoBlob = b; focusX = 50; focusY = 50; showPreview(URL.createObjectURL(b)); }, 'image/jpeg', .85);
-  };
-  img.src = URL.createObjectURL(f);
+  const b = await pickCrop(f, 900, 900);
+  this.value='';
+  if(!b) return;
+  photoBlob = b; focusX = 50; focusY = 50; showPreview(URL.createObjectURL(b));
 });
 
 async function saveReview(){
@@ -460,6 +456,55 @@ function renderGallery(){
 }
 function galMove(i,dir){ const j=i+dir; if(j<0||j>=galItems.length)return; [galItems[i],galItems[j]]=[galItems[j],galItems[i]]; renderGallery(); }
 function galRemove(i){ galItems.splice(i,1); renderGallery(); }
+function pickCrop(file, w, h){
+  return new Promise(function(resolve){
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=function(){
+      const ov=document.createElement('div');
+      ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px';
+      const vw=Math.min(340, window.innerWidth-48);
+      const vh=Math.round(vw*h/w);
+      const vp=document.createElement('div');
+      vp.style.cssText='width:'+vw+'px;height:'+vh+'px;overflow:hidden;position:relative;border-radius:8px;background:#111;touch-action:none;cursor:grab;flex:none';
+      const el=document.createElement('img'); el.src=url; el.draggable=false;
+      el.style.cssText='position:absolute;left:0;top:0;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none';
+      vp.appendChild(el);
+      const cover=Math.max(vw/img.width, vh/img.height);
+      let s=cover, ox=(vw-img.width*s)/2, oy=(vh-img.height*s)/2;
+      function clampPos(){ ox=Math.min(0,Math.max(vw-img.width*s,ox)); oy=Math.min(0,Math.max(vh-img.height*s,oy)); }
+      function draw(){ clampPos(); el.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')'; }
+      draw();
+      let dragging=false,lx=0,ly=0;
+      vp.addEventListener('pointerdown',function(e){dragging=true;lx=e.clientX;ly=e.clientY;vp.setPointerCapture(e.pointerId);e.preventDefault()});
+      vp.addEventListener('pointermove',function(e){if(!dragging)return;ox+=e.clientX-lx;oy+=e.clientY-ly;lx=e.clientX;ly=e.clientY;draw()});
+      vp.addEventListener('pointerup',function(){dragging=false});
+      vp.addEventListener('pointercancel',function(){dragging=false});
+      const slider=document.createElement('input'); slider.type='range'; slider.min='100'; slider.max='300'; slider.value='100'; slider.style.width=vw+'px';
+      slider.addEventListener('input',function(){
+        const ns=cover*slider.value/100;
+        const cx=vw/2, cy=vh/2;
+        ox=cx-(cx-ox)*ns/s; oy=cy-(cy-oy)*ns/s; s=ns; draw();
+      });
+      const hint=document.createElement('div'); hint.textContent='Drag to position \u00b7 slide to zoom'; hint.style.cssText='color:#fff;font-size:13px';
+      const row=document.createElement('div'); row.style.cssText='display:flex;gap:10px';
+      const ok=document.createElement('button'); ok.type='button'; ok.textContent='Use photo'; ok.style.cssText='background:#fff;color:#111;padding:10px 20px;border-radius:8px;border:0;font-weight:600;font-size:15px;cursor:pointer';
+      const cancel=document.createElement('button'); cancel.type='button'; cancel.textContent='Cancel'; cancel.style.cssText='background:transparent;color:#fff;padding:10px 20px;border-radius:8px;border:1px solid #999;font-size:15px;cursor:pointer';
+      row.appendChild(ok); row.appendChild(cancel);
+      ov.appendChild(hint); ov.appendChild(vp); ov.appendChild(slider); ov.appendChild(row);
+      document.body.appendChild(ov);
+      function done(b){ document.body.removeChild(ov); URL.revokeObjectURL(url); resolve(b); }
+      ok.addEventListener('click',function(){
+        const c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img, -ox/s, -oy/s, vw/s, vh/s, 0, 0, w, h);
+        c.toBlob(function(b){ done(b||null); },'image/jpeg',.85);
+      });
+      cancel.addEventListener('click',function(){ done(null); });
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); resolve(null); };
+    img.src=url;
+  });
+}
 function cropToBlob(file, w, h){
   return new Promise((res,rej)=>{
     const img=new Image();
@@ -552,6 +597,7 @@ function readColItems(){
       meta: row.querySelector('.ci-meta').value.trim() || null,
       blurb: row.querySelector('.ci-blurb').value.trim() || null,
       gmaps: row.querySelector('.ci-gmaps').value.trim() || null,
+      instagram: row.querySelector('.ci-insta').value.trim() || null,
       image: prev.image || null,
       _blob: prev._blob || null,
       _preview: prev._preview || null
@@ -574,6 +620,7 @@ function renderColItems(){
       <label>Meta line</label><input type="text" class="ci-meta" placeholder="Al Manara \u00b7 AED 60pp" value="${esc(it.meta||'')}">
       <label>Blurb</label><textarea class="ci-blurb" style="min-height:70px">${esc(it.blurb||'')}</textarea>
       <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">
+      <label>Instagram (handle or link, optional)</label><input type="text" class="ci-insta" placeholder="@spotname" value="${esc(it.instagram||'')}">
       <label>Photo (shown on the guide page)</label>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         ${(it._preview||it.image)?`<img src="${it._preview||(it.image.startsWith('http')?it.image:'/'+it.image)}" style="width:96px;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--line)" alt="">`:''}
@@ -584,7 +631,9 @@ function renderColItems(){
     d.querySelector('.ci-photo').addEventListener('change', async function(){
       const f=this.files[0]; if(!f) return;
       readColItems();
-      const b=await cropToBlob(f,1080,1350);
+      const b=await pickCrop(f,1080,1350);
+      this.value='';
+      if(!b) return;
       colItems[i]._blob=b; colItems[i]._preview=URL.createObjectURL(b);
       renderColItems();
     });
@@ -596,7 +645,10 @@ function colMoveItem(i,dir){ readColItems(); const j=i+dir; if(j<0||j>=colItems.
 function colRemoveItem(i){ readColItems(); colItems.splice(i,1); renderColItems(); }
 document.getElementById('cCover').addEventListener('change', async function(){
   const f=this.files[0]; if(!f) return;
-  colCoverBlob = await cropToBlob(f,1200,720);
+  const b = await pickCrop(f,1200,720);
+  this.value='';
+  if(!b) return;
+  colCoverBlob = b;
   const pv=document.getElementById('cCoverPrev'); pv.src=URL.createObjectURL(colCoverBlob); pv.classList.remove('hidden');
 });
 async function saveCol(){
@@ -611,7 +663,7 @@ async function saveCol(){
       tag: document.getElementById('cTag').value.trim()||null,
       area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
       intro: document.getElementById('cIntro').value.trim()||null,
-      items: type==='guide'?colItems.filter(i=>i.review_slug||i.name).map(i=>({review_slug:i.review_slug,name:i.name,meta:i.meta,blurb:i.blurb,gmaps:i.gmaps,image:i.image||null})):[],
+      items: type==='guide'?colItems.filter(i=>i.review_slug||i.name).map(i=>({review_slug:i.review_slug,name:i.name,meta:i.meta,blurb:i.blurb,gmaps:i.gmaps,instagram:i.instagram||null,image:i.image||null})):[],
       published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null, date_published: val('cDatePub')||null, date_modified: val('cDateMod')||new Date().toISOString().slice(0,10) };
     if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);
     let error;
