@@ -2,15 +2,55 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/reviews/bkry.html", "destination": "/bkry", "permanent": true },
-    { "source": "/reviews/heal.html", "destination": "/heal", "permanent": true },
-    { "source": "/reviews/orto.html", "destination": "/orto", "permanent": true },
-    { "source": "/reviews/jungle-bowls.html", "destination": "/jungle-bowls", "permanent": true },
-    { "source": "/reviews/slrp.html", "destination": "/slrp", "permanent": true },
-    { "source": "/reviews/eleven-green.html", "destination": "/eleven-green", "permanent": true }
+    {
+      "source": "/reviews/bkry.html",
+      "destination": "/bkry",
+      "permanent": true
+    },
+    {
+      "source": "/reviews/heal.html",
+      "destination": "/heal",
+      "permanent": true
+    },
+    {
+      "source": "/reviews/orto.html",
+      "destination": "/orto",
+      "permanent": true
+    },
+    {
+      "source": "/reviews/jungle-bowls.html",
+      "destination": "/jungle-bowls",
+      "permanent": true
+    },
+    {
+      "source": "/reviews/slrp.html",
+      "destination": "/slrp",
+      "permanent": true
+    },
+    {
+      "source": "/reviews/eleven-green.html",
+      "destination": "/eleven-green",
+      "permanent": true
+    },
+    {
+      "source": "/guides/coffee-shops.html",
+      "destination": "/g/coffee-shops",
+      "permanent": true
+    },
+    {
+      "source": "/guides/coffee-shops",
+      "destination": "/g/coffee-shops",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/g/:slug", "destination": "/guide?slug=:slug" },
-    { "source": "/:slug", "destination": "/review?slug=:slug" }
+    {
+      "source": "/g/:slug",
+      "destination": "/guide?slug=:slug"
+    },
+    {
+      "source": "/:slug",
+      "destination": "/review?slug=:slug"
+    }
   ]
 }
