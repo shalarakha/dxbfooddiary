@@ -576,7 +576,7 @@ function renderColItems(){
       <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">
       <label>Photo (shown on the guide page)</label>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        ${(it._preview||it.image)?`<img src="${it._preview||(it.image.startsWith('http')?it.image:'/'+it.image)}" style="width:128px;height:72px;object-fit:cover;border-radius:6px;border:1px solid var(--line)" alt="">`:''}
+        ${(it._preview||it.image)?`<img src="${it._preview||(it.image.startsWith('http')?it.image:'/'+it.image)}" style="width:96px;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--line)" alt="">`:''}
         <input type="file" class="ci-photo" accept="image/*" style="max-width:220px">
         ${(it._preview||it.image)?`<button class="btn small danger" type="button" onclick="colClearPhoto(${i})">Remove photo</button>`:''}
       </div>`;
@@ -584,7 +584,7 @@ function renderColItems(){
     d.querySelector('.ci-photo').addEventListener('change', async function(){
       const f=this.files[0]; if(!f) return;
       readColItems();
-      const b=await cropToBlob(f,1600,900);
+      const b=await cropToBlob(f,1080,1350);
       colItems[i]._blob=b; colItems[i]._preview=URL.createObjectURL(b);
       renderColItems();
     });
