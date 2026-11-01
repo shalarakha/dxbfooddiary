@@ -625,7 +625,7 @@ function renderColItems(){
       <label>Google Maps link (optional)</label><input type="text" class="ci-gmaps" value="${esc(it.gmaps||'')}">
       <label>Instagram (handle or link, optional)</label><input type="text" class="ci-insta" placeholder="@spotname" value="${esc(it.instagram||'')}">
       <label>Instagram post to embed (their post link, optional)</label><input type="text" class="ci-igpost" placeholder="https://www.instagram.com/p/..." value="${esc(it.ig_post||'')}">
-      <label>Instagram post style</label><select class="ci-embed">${[['','Full Instagram embed'],['card','Tap-to-load card'],['crop','Cropped player'],['side','Side-by-side']].map(o=>`<option value="${o[0]}" ${(it.embed_style||'')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+      <label>Instagram post style</label><select class="ci-embed">${[['','Instagram embed (trimmed)'],['card','Tap-to-load card'],['crop','Cropped player'],['side','Side-by-side']].map(o=>`<option value="${o[0]}" ${(it.embed_style||'')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
       <label>Menu link (optional)</label><input type="text" class="ci-menu" placeholder="https://..." value="${esc(it.menu||'')}">
       <label>Photo (shown on the guide page)</label>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">

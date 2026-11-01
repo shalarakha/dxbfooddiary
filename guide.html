@@ -126,6 +126,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .tlinks svg{width:16px;height:16px}
 .rank .meta{margin-top:4px}
 .rank .igwrap{margin-top:14px;max-width:540px}.rank .igwrap .instagram-media{margin:0!important;min-width:0!important;width:100%!important}
+.rank .igtrim{overflow:hidden;border-bottom:1px solid #dbdbdb;border-radius:0 0 3px 3px}
 .rank .igcrop{position:relative;width:100%;max-width:440px;aspect-ratio:4/5;overflow:hidden;border-radius:6px;background:#000;margin-top:14px}.rank .igcrop iframe{position:absolute;left:0;top:-54px;width:100%;height:calc(100% + 54px + 230px);border:0}
 .rank .igcard{position:relative;display:block;width:100%;max-width:440px;aspect-ratio:4/5;border-radius:6px;overflow:hidden;margin-top:14px;cursor:pointer;border:0;padding:0;background:#1a1a1a center/cover no-repeat;color:#fff;font:inherit;text-align:left}
 .rank .igcard .play{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}.rank .igcard .play svg{width:26px;height:26px;margin-left:4px;color:#1a1a1a}
@@ -272,7 +273,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
             if(style==="crop")media='<div class="igcrop"><iframe src="'+esc(emb)+'" loading="lazy" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay" title="'+esc(name)+' on Instagram"></iframe></div>';
             else if(style==="card"){var handle=(it.instagram||"").replace(/^https?:\/\/(www\.)?instagram\.com\//,"").replace(/[@\/]/g,"");
               media='<button type="button" class="igcard" data-emb="'+esc(emb)+'" data-name="'+esc(name)+'"'+(img?' style="background-image:url('+esc(img)+')"':"")+'>'+(img?"":'<span class="brandmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></span>')+'<span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span><span class="who"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg>'+(handle?"@"+esc(handle)+" \u00b7 ":"")+'Tap to play</span></button>'}
-            else media='<div class="igwrap"><blockquote class="instagram-media" data-instgrm-permalink="'+esc(post)+'" data-instgrm-version="14"><a href="'+esc(post)+'" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>';
+            else media='<div class="igwrap igtrim"><blockquote class="instagram-media" data-instgrm-permalink="'+esc(post)+'" data-instgrm-version="14"><a href="'+esc(post)+'" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>';
           }else if(img)media='<div class="ph"><img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy"></div>';
           var gm=it.gmaps||(r?r.gmaps_url:"");
           var ig=igUrl(it.instagram||(r?r.instagram_url:""));
@@ -286,6 +287,10 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           return head+media+tail+"</div></article>";
         }).join("");
         Array.prototype.forEach.call(document.querySelectorAll(".igcard"),function(b){b.addEventListener("click",function(){var d=document.createElement("div");d.className="igcrop";d.innerHTML='<iframe src="'+b.getAttribute("data-emb")+'" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay" title="'+b.getAttribute("data-name")+' on Instagram"></iframe>';b.parentNode.replaceChild(d,b)})});
+        var IGFOOT=113;
+        function igTrim(){Array.prototype.forEach.call(document.querySelectorAll(".igtrim"),function(w){var f=w.querySelector("iframe");if(f&&f.offsetHeight>250)w.style.height=(f.offsetHeight-IGFOOT)+"px"})}
+        var tn=0,ti=setInterval(function(){igTrim();if(++tn>40)clearInterval(ti)},500);
+        window.addEventListener("resize",function(){Array.prototype.forEach.call(document.querySelectorAll(".igtrim"),function(w){w.style.height=""});setTimeout(igTrim,800)});
         if(items.some(function(i){return igPost(i.ig_post)&&(!i.embed_style||i.embed_style==="full"||i.embed_style==="side")})){
           if(window.instgrm){window.instgrm.Embeds.process()}
           else{var sc=document.createElement("script");sc.async=true;sc.src="https://www.instagram.com/embed.js";document.body.appendChild(sc)}
