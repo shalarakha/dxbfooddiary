@@ -125,6 +125,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .tlinks a{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink)}
 .tlinks svg{width:16px;height:16px}
 .rank .meta{margin-top:4px}
+.rank .igwrap{margin-top:14px;max-width:540px}.rank .igwrap .instagram-media{margin:0!important;min-width:0!important;width:100%!important}
 .rank p.blurb{margin-top:12px;font-size:16px;line-height:1.7}
 .rank .btns{margin-top:14px}
 .rank .btn{padding:9px 16px;font-size:13px}
@@ -182,6 +183,7 @@ function toggleMenu(){var m=document.getElementById("menu");var o=m.classList.to
 function closeMenu(){document.getElementById("menu").classList.remove("open");document.querySelector(".burger").setAttribute("aria-expanded","false")}
 function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function imgUrl(u){return u?(u.indexOf("http")===0?u:"/"+u):""}
+function igPost(v){if(!v)return"";var m=String(v).trim().match(/instagram\.com\/(?:[A-Za-z0-9_.]+\/)?(p|reel|tv)\/([A-Za-z0-9_-]+)/);return m?"https://www.instagram.com/"+m[1]+"/"+m[2]+"/":""}
 function igUrl(v){if(!v)return"";v=v.trim();if(v.indexOf("http")===0)return v;return"https://instagram.com/"+v.replace(/^@/,"")}
 function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
 (function(){
@@ -252,14 +254,21 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           var meta=r?[r.area,r.price].filter(Boolean).join(" \u00b7 ")+(r.rating?" \u00b7 <span class=\"stars\">\u2605</span> "+(+r.rating).toFixed(1)+" / 5":""):esc(it.meta||"");
           var img=it.image?imgUrl(it.image):(r?imgUrl(r.image_url):"");
           var btns="";
-          if(r)btns+='<a class="btn solid" href="'+revHref(r)+'">Read the full review</a>';
+          var menu=it.menu||"";
+          if(menu)btns+='<a class="btn solid" href="'+esc(menu)+'" target="_blank" rel="noopener">View the menu</a>';
+          if(r)btns+='<a class="btn'+(menu?'':' solid')+'" href="'+revHref(r)+'">Read the full review</a>';
+          var post=igPost(it.ig_post);
           var gm=it.gmaps||(r?r.gmaps_url:"");
           var ig=igUrl(it.instagram||(r?r.instagram_url:""));
           var tlinks="";
           if(ig)tlinks+='<a href="'+esc(ig)+'" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>';
           if(gm)tlinks+='<a href="'+esc(gm)+'" target="_blank" rel="noopener" aria-label="Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.4-7-11a7 7 0 1 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></a>';
-          return '<article class="rank"><div class="num">'+(idx+1)+'</div><div><div class="trow"><h2 class="serif">'+esc(name)+'</h2>'+(tlinks?'<span class="tlinks">'+tlinks+"</span>":"")+'</div><p class="meta">'+meta+"</p>"+(img?'<div class="ph"><img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy"></div>':"")+(it.blurb?'<p class="blurb">'+esc(it.blurb)+"</p>":"")+(btns?'<div class="btns">'+btns+"</div>":"")+"</div></article>";
+          return '<article class="rank"><div class="num">'+(idx+1)+'</div><div><div class="trow"><h2 class="serif">'+esc(name)+'</h2>'+(tlinks?'<span class="tlinks">'+tlinks+"</span>":"")+'</div><p class="meta">'+meta+"</p>"+(post?'<div class="igwrap"><blockquote class="instagram-media" data-instgrm-permalink="'+esc(post)+'" data-instgrm-version="14"><a href="'+esc(post)+'" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>':(img?'<div class="ph"><img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy"></div>':""))+(it.blurb?'<p class="blurb">'+esc(it.blurb)+"</p>":"")+(btns?'<div class="btns">'+btns+"</div>":"")+"</div></article>";
         }).join("");
+        if(items.some(function(i){return igPost(i.ig_post)})){
+          if(window.instgrm){window.instgrm.Embeds.process()}
+          else{var sc=document.createElement("script");sc.async=true;sc.src="https://www.instagram.com/embed.js";document.body.appendChild(sc)}
+        }
       });
     }
   })
