@@ -124,6 +124,7 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .tlinks{display:flex;gap:8px}
 .tlinks a{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink)}
 .tlinks svg{width:16px;height:16px}
+.tlinks a.menupill{width:auto;height:32px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap;background:var(--ink);color:#fff;border-color:var(--ink)}
 .rank .meta{margin-top:4px}
 .rank .igwrap{margin-top:14px;max-width:540px}.rank .igwrap .instagram-media{margin:0!important;min-width:0!important;width:100%!important}
 .rank .igtrim{overflow:hidden;border-bottom:1px solid #dbdbdb;border-radius:0 0 3px 3px}
@@ -263,8 +264,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           var img=it.image?imgUrl(it.image):(r?imgUrl(r.image_url):"");
           var btns="";
           var menu=it.menu||"";
-          if(menu)btns+='<a class="btn solid" href="'+esc(menu)+'" target="_blank" rel="noopener">View the menu</a>';
-          if(r)btns+='<a class="btn'+(menu?'':' solid')+'" href="'+revHref(r)+'">Read the full review</a>';
+          if(r)btns+='<a class="btn solid" href="'+revHref(r)+'">Read the full review</a>';
           var post=igPost(it.ig_post);
           var style=it.embed_style||"full";
           var media="";
@@ -278,6 +278,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           var gm=it.gmaps||(r?r.gmaps_url:"");
           var ig=igUrl(it.instagram||(r?r.instagram_url:""));
           var tlinks="";
+          if(menu)tlinks+='<a class="menupill" href="'+esc(menu)+'" target="_blank" rel="noopener">'+(c.slug==="marsa-boulevard"?"Marsa Menu":"Menu")+'</a>';
           if(ig)tlinks+='<a href="'+esc(ig)+'" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>';
           if(gm)tlinks+='<a href="'+esc(gm)+'" target="_blank" rel="noopener" aria-label="Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.4-7-11a7 7 0 1 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></a>';
           var top='<div class="trow"><h2 class="serif">'+esc(name)+'</h2>'+(tlinks?'<span class="tlinks">'+tlinks+"</span>":"")+'</div><p class="meta">'+meta+"</p>";
