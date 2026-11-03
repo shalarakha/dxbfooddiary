@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://www.instagram.com">
+<link rel="preconnect" href="https://static.cdninstagram.com" crossorigin>
+<link rel="dns-prefetch" href="https://scontent.cdninstagram.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <title>DXB Food Diary</title>
@@ -127,7 +130,8 @@ footer{border-top:1px solid var(--line);padding:48px 20px;font-size:13px;color:v
 .tlinks a.menupill{width:auto;height:32px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap;background:var(--ink);color:#fff;border-color:var(--ink)}
 .rank .meta{margin-top:4px}
 .rank .igwrap{margin-top:14px;max-width:540px}.rank .igwrap .instagram-media{margin:0!important;min-width:0!important;width:100%!important}
-.rank .igtrim{position:relative;overflow:hidden;height:0;padding-top:calc(55px + 125%);border:1px solid #dbdbdb;border-radius:4px;background:#fff;margin-top:14px;max-width:540px}.rank .igtrim iframe{position:absolute;top:-1px;left:-1px;width:calc(100% + 2px);height:1400px;border:0}
+.rank .igtrim{position:relative;overflow:hidden;height:0;padding-top:calc(55px + 125%);border:1px solid #dbdbdb;border-radius:4px;background:#f4f2ee;margin-top:14px;max-width:540px}.rank .igtrim iframe{position:absolute;top:-1px;left:-1px;width:calc(100% + 2px);height:1400px;border:0;opacity:0;transition:opacity .3s}.rank .igtrim iframe.on{opacity:1}
+.rank .igtrim .igph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#9a968e;font-size:13px}.rank .igtrim .igph svg{width:34px;height:34px;animation:igp 1.4s ease-in-out infinite}@keyframes igp{50%{opacity:.35}}
 .rank .igcrop{position:relative;width:100%;max-width:440px;aspect-ratio:4/5;overflow:hidden;border-radius:6px;background:#000;margin-top:14px}.rank .igcrop iframe{position:absolute;left:0;top:-54px;width:100%;height:calc(100% + 54px + 230px);border:0}
 .rank .igcard{position:relative;display:block;width:100%;max-width:440px;aspect-ratio:4/5;border-radius:6px;overflow:hidden;margin-top:14px;cursor:pointer;border:0;padding:0;background:#1a1a1a center/cover no-repeat;color:#fff;font:inherit;text-align:left}
 .rank .igcard .play{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}.rank .igcard .play svg{width:26px;height:26px;margin-left:4px;color:#1a1a1a}
@@ -275,7 +279,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
             if(style==="crop")media='<div class="igcrop"><iframe src="'+esc(emb)+'" loading="lazy" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay" title="'+esc(name)+' on Instagram"></iframe></div>';
             else if(style==="card"){var handle=(it.instagram||"").replace(/^https?:\/\/(www\.)?instagram\.com\//,"").replace(/[@\/]/g,"");
               media='<button type="button" class="igcard" data-emb="'+esc(emb)+'" data-name="'+esc(name)+'"'+(img?' style="background-image:url('+esc(img)+')"':"")+'>'+(img?"":'<span class="brandmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></span>')+'<span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span><span class="who"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg>'+(handle?"@"+esc(handle)+" \u00b7 ":"")+'Tap to play</span></button>'}
-            else media='<div class="igtrim"><iframe src="'+esc(emb)+'" loading="'+(idx<2?"eager":"lazy")+'" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay; clipboard-write" title="'+esc(name)+' on Instagram"></iframe></div>';
+            else media='<div class="igtrim"><div class="igph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg>Loading post\u2026</div><iframe data-src="'+esc(emb)+'" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay; clipboard-write" title="'+esc(name)+' on Instagram"></iframe></div>';
           }else if(img)media='<div class="ph"><img src="'+esc(img)+'" alt="'+esc(name)+'" loading="lazy"></div>';
           var gm=it.gmaps||(r?r.gmaps_url:"");
           var ig=igUrl(it.instagram||(r?r.instagram_url:""));
@@ -289,6 +293,14 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
           if(style==="side"&&media)return head.replace(top,"")+'<div class="side"><div>'+top+tail+'</div><div>'+media+'</div></div></div></article>';
           return head+media+tail+"</div></article>";
         }).join("");
+        (function(){
+          var frames=[].slice.call(document.querySelectorAll(".igtrim iframe[data-src]"));
+          function go(f){if(!f||f.src)return;f.onload=function(){f.classList.add("on")};f.src=f.getAttribute("data-src")}
+          frames.slice(0,3).forEach(go);
+          if(window.IntersectionObserver){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){go(e.target);io.unobserve(e.target)}})},{rootMargin:"2500px 0px"});frames.forEach(function(f){io.observe(f)})}else frames.forEach(go);
+          var q=frames.slice(3),qi=0;function next(){while(qi<q.length&&q[qi].src)qi++;if(qi>=q.length)return;go(q[qi++]);setTimeout(next,1200)}
+          window.addEventListener("load",function(){setTimeout(next,1500)});if(document.readyState==="complete")setTimeout(next,1500);
+        })();
         Array.prototype.forEach.call(document.querySelectorAll(".igcard"),function(b){b.addEventListener("click",function(){var d=document.createElement("div");d.className="igcrop";d.innerHTML='<iframe src="'+b.getAttribute("data-emb")+'" scrolling="no" allowtransparency="true" allow="encrypted-media; autoplay" title="'+b.getAttribute("data-name")+' on Instagram"></iframe>';b.parentNode.replaceChild(d,b)})});
       });
     }
