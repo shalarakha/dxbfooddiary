@@ -188,6 +188,8 @@ textarea{min-height:120px;resize:vertical}
     </div>
     <div id="cAreaWrap" class="hidden"><label>Area name to match (must equal the Area on reviews)</label><input type="text" id="cAreaMatch" placeholder="JLT"></div>
     <label>Intro paragraph(s)</label><textarea id="cIntro" placeholder="Separate paragraphs with a blank line."></textarea>
+    <label>Google title (optional, aim for under 60 characters)</label><input type="text" id="cSeoTitle" maxlength="70">
+    <label>Google description (optional, aim for under 155 characters)</label><textarea id="cSeoDesc" maxlength="200" style="min-height:60px"></textarea>
     <label>Cover photo (homepage tile)</label>
     <input type="file" id="cCover" accept="image/*">
     <img id="cCoverPrev" class="hidden" style="width:220px;aspect-ratio:5/3;object-fit:cover;border-radius:8px;margin-top:8px;background:var(--sand)">
@@ -574,6 +576,8 @@ function openColEditor(c){
   document.getElementById('cTag').value = c?.tag || '';
   document.getElementById('cAreaMatch').value = c?.area_match || '';
   document.getElementById('cIntro').value = c?.intro || '';
+  document.getElementById('cSeoTitle').value = c?.seo_title || '';
+  document.getElementById('cSeoDesc').value = c?.seo_description || '';
   document.getElementById('cPub').checked = c ? !!c.published : true;
   document.getElementById('cFeat').checked = c ? !!c.featured : false;
   set('cHpo', c?.homepage_order);
@@ -669,6 +673,8 @@ async function saveCol(){
       tag: document.getElementById('cTag').value.trim()||null,
       area_match: type==='area'?(document.getElementById('cAreaMatch').value.trim()||title):null,
       intro: document.getElementById('cIntro').value.trim()||null,
+      seo_title: document.getElementById('cSeoTitle').value.trim()||null,
+      seo_description: document.getElementById('cSeoDesc').value.trim()||null,
       items: type==='guide'?colItems.filter(i=>i.review_slug||i.name).map(i=>({review_slug:i.review_slug,name:i.name,meta:i.meta,blurb:i.blurb,gmaps:i.gmaps,instagram:i.instagram||null,ig_post:i.ig_post||null,menu:i.menu||null,embed_style:i.embed_style||null,image:i.image||null})):[],
       published: document.getElementById('cPub').checked, featured: document.getElementById('cFeat').checked, homepage_order: val('cHpo')?parseInt(val('cHpo'),10):null, date_published: val('cDatePub')||null, date_modified: val('cDateMod')||new Date().toISOString().slice(0,10) };
     if(colCoverBlob) rec.cover_url = await uploadBlob(colCoverBlob,'cover-'+slug);

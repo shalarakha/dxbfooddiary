@@ -213,6 +213,8 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
     if(!c){document.getElementById("notfound").style.display="block";return}
     var isArea=c.type==="area";
     document.title=(isArea?("Where to eat in "+c.title):c.title)+" | DXB Food Diary";
+    if(c.seo_title)document.title=c.seo_title;
+    (function(){var md=document.querySelector('meta[name=description]');var d=c.seo_description||(c.intro?c.intro.replace(/\s+/g," ").slice(0,157)+(c.intro.length>157?"...":""):"");if(md&&d)md.setAttribute("content",d)})();
     document.getElementById("hero").style.display="block";
     window.scrollTo(0,0);
     document.getElementById("crumb").innerHTML='<a href="/">Home</a> \u203a <a href="/#'+(isArea?"areas":"guides")+'">'+(isArea?"Areas":"Guides")+"</a> \u203a "+esc(c.tag||c.title);
