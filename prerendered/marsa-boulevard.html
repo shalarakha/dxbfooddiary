@@ -313,7 +313,7 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
       });
     }
   })
-  .catch(function(){document.getElementById("notfound").style.display="block"});
+  .catch(function(){if(!document.querySelector("#rankList .rank"))document.getElementById("notfound").style.display="block"});
 })();
 </script>
 </body>

@@ -45,6 +45,10 @@
   ],
   "rewrites": [
     {
+      "source": "/g/marsa-boulevard",
+      "destination": "/prerendered/marsa-boulevard"
+    },
+    {
       "source": "/g/:slug",
       "destination": "/guide?slug=:slug"
     },

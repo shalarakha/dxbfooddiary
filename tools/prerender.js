@@ -65,6 +65,6 @@ function render(tpl, c, origin) {
 const root = path.join(__dirname, "..");
 const c = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 const tpl = fs.readFileSync(path.join(root, "guide.html"), "utf8");
-const out = path.join(root, "g", c.slug + ".html");
+const out = path.join(root, "prerendered", c.slug + ".html");
 fs.writeFileSync(out, render(tpl, c, "https://dxbfooddiary.com"));
 console.log("wrote", out);
