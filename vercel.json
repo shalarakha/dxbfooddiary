@@ -46,7 +46,7 @@
   "rewrites": [
     {
       "source": "/g/:slug",
-      "destination": "/api/g?slug=:slug"
+      "destination": "/guide?slug=:slug"
     },
     {
       "source": "/:slug",
