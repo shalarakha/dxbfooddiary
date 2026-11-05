@@ -210,8 +210,11 @@ function revHref(r){return r.page_url?"/"+r.page_url:"/"+r.slug}
   }
   if(!slug){document.getElementById("notfound").style.display="block";return}
   var h={apikey:DXB.SUPA_KEY,Authorization:"Bearer "+DXB.SUPA_KEY};
+  // Live data from Supabase; if that's unavailable (e.g. to search-engine renderers), use the same-site snapshot.
   fetch(DXB.SUPA_URL+"/rest/v1/collections?slug=eq."+encodeURIComponent(slug)+"&published=eq.true&select=*",{headers:h})
   .then(function(x){return x.json()})
+  .then(function(rows){if(Array.isArray(rows)&&rows[0])return rows;throw new Error("no live data")})
+  .catch(function(){return fetch("/data/guides/"+encodeURIComponent(slug)+".json").then(function(x){if(!x.ok)return [];return x.json()}).then(function(d){return Array.isArray(d)?d:[d]})})
   .then(function(rows){
     var c=rows&&rows[0];
     if(!c){document.getElementById("notfound").style.display="block";return}

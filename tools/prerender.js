@@ -68,3 +68,8 @@ const tpl = fs.readFileSync(path.join(root, "guide.html"), "utf8");
 const out = path.join(root, "prerendered", c.slug + ".html");
 fs.writeFileSync(out, render(tpl, c, "https://dxbfooddiary.com"));
 console.log("wrote", out);
+const dataDir = path.join(root, "data", "guides");
+fs.mkdirSync(dataDir, { recursive: true });
+const dataOut = path.join(dataDir, c.slug + ".json");
+fs.writeFileSync(dataOut, JSON.stringify(c));
+console.log("wrote", dataOut);
